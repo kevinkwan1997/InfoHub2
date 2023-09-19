@@ -1,0 +1,6 @@
+<div class="outer" *ngIf="isApplicationLoaded$ | async">
+    <div class="app" *ngIf="currentWeather$ | async as currentWeather" >
+        {{ currentWeather }}
+    </div>
+    <div class="test" *ngIf="hourlyWeather$ | async as hourlyWeather"></div>
+</div>
