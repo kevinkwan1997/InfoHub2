@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
@@ -9,7 +9,11 @@ import { Observable } from 'rxjs';
 export class HttpService {
   constructor(private http: HttpClient) {}
 
-  public get<T>(url: string, config?: any): Observable<T> {
+  public get<T>(url: string): Observable<T> {
     return this.http.get<T>(url); // TODO: configure for options
+  }
+
+  public getBlob(url: string): Observable<any> {
+    return this.http.get(url, { observe: 'response', responseType: 'blob' });
   }
 }

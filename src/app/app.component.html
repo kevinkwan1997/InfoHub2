@@ -1,6 +1,5 @@
-<div class="outer" *ngIf="isApplicationLoaded$ | async">
-    <div class="app" *ngIf="currentWeather$ | async as currentWeather" >
-        {{ currentWeather }}
-    </div>
-    <div class="test" *ngIf="hourlyWeather$ | async as hourlyWeather"></div>
+<div class="app" *ngIf="isApplicationLoaded$ | async">
+    <main-grid></main-grid>
+</div>
+<div class="loader" *ngIf="!(isApplicationLoaded$ | async)">
 </div>
