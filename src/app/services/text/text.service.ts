@@ -14,4 +14,8 @@ export class TextService {
     }
     return base.replace(/{{.*}}/, string);
   }
+
+  public formatTemperature(temp: number): number {
+    return Math.round(temp);
+  }
 }

@@ -1,31 +1,38 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { BaseWidget } from '../base-widget';
 import { WeatherService } from 'src/app/services/data/weather/weather.service';
 import { Observable } from 'rxjs';
 import { Weather } from 'src/app/interface/data/weather';
-import { WeatherIndication } from 'src/app/enum/weather';
+import { TextService } from 'src/app/services/text/text.service';
 
 @Component({
   selector: 'weather',
   templateUrl: './weather.component.html',
   styleUrls: ['./weather.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WeatherComponent implements OnInit, BaseWidget {
     constructor(
+      private textService: TextService,
       private weatherService: WeatherService
-    ) {
-
-    }
-    public isApplicationLoaded$!: Observable<boolean>;
-    public currentWeather!: Weather;
+    ) {}
+    
+    public currentWeather = signal<Weather | null>(null);
     public hourlyWeather!: any; // TODO: Update
-    public currentIcon!: any;
+    public currentIcon$!: Observable<any>;
+    public currentBg!: string;
 
-    async ngOnInit(): Promise<void> {
-      this.currentWeather = await this.weatherService.getCurrentWeatherDataByZip('28226');
-      this.hourlyWeather = await this.weatherService.getHourlyDataByZip();
-      const weather: WeatherIndication = <WeatherIndication>this.currentWeather.weather[0].main;
-      this.currentIcon = await this.weatherService.getIcon(weather);
+    public async ngOnInit(){
+      this.currentIcon$ = this.weatherService.getCurrentWeatherIcon();
+      const currentWeather = await this.weatherService.getCurrentWeatherDataByZip('28226');
+      this.currentWeather.set(currentWeather);
+      // this.currentBg = this.weatherService.getBackgroundImage(<WeatherIndication>currentWeather.weather[0].main);
+    }
+
+    public formatTemperature(temperature: number | undefined): number {
+      if (!temperature) {
+        return 0;
+      }
+      return this.textService.formatTemperature(temperature);
     }
 }

@@ -15,6 +15,8 @@ export enum WeatherQueryParams {
     LAT = 'lat={{latitude}}&',
     LON = 'lon={{longitude}}&',
     EXCLUDE_CURRENT = 'exclude=current&',
+    METRIC_UNIT = 'units=metric&',
+    IMPERIAL_UNIT = 'units=imperial&'
 }
 
 export enum WeatherIndication {

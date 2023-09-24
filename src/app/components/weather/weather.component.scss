@@ -1,0 +1,65 @@
+@import '../../../styles/variables';
+
+:host {
+    width: 32rem;
+    height: $header-height;
+    right: 0;
+}
+
+.weather {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: $box-padding-small;
+    text-shadow: $text-shadow;
+    background-image: linear-gradient(to left, rgba(97, 91, 91, 0.75) 80%, rgba(255, 255, 255, 1)), url('../../../assets/cloudfoot.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
+    color: $color-white;
+
+    &__left {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__right {
+        display: flex;
+    }
+
+    &__icon {
+        height: 6.5rem;
+        width: 6.5rem;
+    }
+
+    &__extremes {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 500;
+
+        &--high {
+            color: red;
+        }
+
+        &--low {
+            color: $color-white;
+        }
+    }
+
+    &__current {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    &__current-temp {
+        font-size: 2.4rem;
+        font-weight: 500;
+    }
+}

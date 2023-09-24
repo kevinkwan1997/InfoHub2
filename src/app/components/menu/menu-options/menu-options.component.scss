@@ -1,0 +1,17 @@
+@import '/src/styles/variables';
+
+:host {
+    position: absolute;
+    width: 48rem;
+    height: 100vh;
+    background-color: white;
+    left: 0;
+    top: 0;
+    z-index: 5;
+}
+
+.menu-options {
+    background-color: $color-dark-shade;
+    height: 100%;
+    position: relative;
+}

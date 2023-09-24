@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MainGridComponent } from './main-grid.component';
+import { MainPageComponent } from './main-page.component';
 
-describe('MainGridComponent', () => {
-  let component: MainGridComponent;
-  let fixture: ComponentFixture<MainGridComponent>;
+describe('MainPageComponent', () => {
+  let component: MainPageComponent;
+  let fixture: ComponentFixture<MainPageComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MainGridComponent]
+      declarations: [MainPageComponent]
     });
-    fixture = TestBed.createComponent(MainGridComponent);
+    fixture = TestBed.createComponent(MainPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

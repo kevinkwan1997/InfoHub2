@@ -1,1 +1,14 @@
-<div class="weather"></div>
+<div class="weather" *ngIf="currentIcon$ | async as currentIcon">
+    <img class="weather__icon" [src]="currentIcon"/>
+    <div class="weather__left" *ngIf="currentWeather">
+        <p class="weather__current-temp">{{ formatTemperature(currentWeather()?.main?.temp )}}</p>
+        <p class="weather__current">{{ currentWeather()?.weather?.[0]?.main }}</p>
+    </div>
+    <div class="weather__right" *ngIf="currentWeather">
+        <div class="weather__extremes">
+            <p class="weather__extremes--high">High: {{ formatTemperature(currentWeather()?.main?.temp_max) }}</p>
+            <p class="weather_-extremes--low">Low: {{ formatTemperature(currentWeather()?.main?.temp_min) }}</p>
+        </div>
+    </div>
+    <i class="material-icons">expand</i>
+</div>

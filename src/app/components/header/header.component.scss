@@ -1,0 +1,19 @@
+@import '../../../styles/variables';
+
+:host {
+    height: $header-height;
+    width: 100%;
+    background-color: rgba($color-white, 0.2);
+    position: absolute;
+    top: 0;
+    z-index: 4;
+}
+
+.header {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: $box-shadow-light;
+}

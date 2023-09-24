@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, HostListener } from '@angular/core';
 import { WeatherService } from '../data/weather/weather.service';
 import { NewsService } from '../data/news/news.service';
 
@@ -16,6 +16,7 @@ export class ApplicationService {
   }
 
   private isApplicationLoaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private documentClickedTarget$: BehaviorSubject<any> = new BehaviorSubject(null);
 
   public init() {
     const initPromises = [
@@ -30,5 +31,13 @@ export class ApplicationService {
 
   public isApplicationLoaded(): Observable<boolean> {
     return this.isApplicationLoaded$;
+  }
+
+  public getDocumentClickedTarget(): Observable<any> {
+    return this.documentClickedTarget$;
+  }
+
+  public setDocumentClickedTarget$(event: Event) {
+    this.documentClickedTarget$.next(event);
   }
 }

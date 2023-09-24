@@ -1,1 +1,10 @@
-<p>menu works!</p>
+<div class="menu">
+    <button #button class="menu__button">
+        <i class="material-icons menu__button--icon">menu</i>
+    </button>
+    <menu-options
+        [isOptionsShown]="isOptionsShown$ | async"
+        #options
+        [@slideMenu]="(isOptionsShown$ | async) ? true : false">
+    </menu-options>
+</div>

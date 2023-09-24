@@ -1,5 +1,7 @@
-<div class="app" *ngIf="isApplicationLoaded$ | async">
-    <main-grid></main-grid>
+<div class="app" *ngIf="isApplicationLoaded$ | async as isApplicationLoaded">
+    <header></header>
+    <main-page></main-page>
 </div>
-<div class="loader" *ngIf="!(isApplicationLoaded$ | async)">
-</div>
+<!-- <div class="loader" [@fade]="fadeState">
+    <h1 class="loader__text">Loading....</h1>
+</div> -->

@@ -46,3 +46,13 @@ export interface CoordinateData {
     latitude: number;
     longitude: number;
 }
+
+export interface WeatherIconResponse {
+    body: Blob;
+    headers: Object;
+    ok: boolean;
+    status: number;
+    statusText: string;
+    type: number;
+    url: string;
+}

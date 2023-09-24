@@ -1,0 +1,37 @@
+@import '/src/styles/variables';
+
+:host {
+    min-width: $header-height;
+    height: 100%;
+}
+
+.menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__button {
+        width: 4rem;
+        height: 4rem;
+        border: none;
+        background-color: $color-white;
+        border-radius: 0.2rem;
+        transition: 0.2s ease-in-out;
+
+        &:active {
+            background-color: $color-grey-lightest;
+            transform: scale(1.2);
+        }
+
+        &--icon {
+            border: none;
+        }
+    }
+
+    &__options {
+        width: 100%;
+        height: 100%;   
+    }
+}

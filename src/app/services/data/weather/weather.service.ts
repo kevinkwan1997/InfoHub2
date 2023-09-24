@@ -4,8 +4,9 @@ import { TextService } from '../../text/text.service';
 import { HttpService } from '../../http.service';
 import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 
-import { Weather } from 'src/app/interface/data/weather';
+import { Weather, WeatherIconResponse } from 'src/app/interface/data/weather';
 import { Initializable } from 'src/app/interface/data/initializable';
+import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,13 @@ export class WeatherService implements Initializable {
   private latitude!: number;
   private longitude!: number;
 
+  private currentWeatherIcon$: ReplaySubject<any> = new ReplaySubject();
+
   public async getCurrentWeatherDataByZip(zipCode: string): Promise<Weather> {
     const requestUrl = WeatherUrlInfo.URL_BASE
       + WeatherDataTypes.CURRENT_WEATHER
       + this.textService.replace(WeatherQueryParams.ZIP_US, zipCode)
+      + WeatherQueryParams.IMPERIAL_UNIT
       + WeatherQueryParams.APP_ID
       + WeatherUrlInfo.API_KEY
     
@@ -51,7 +55,15 @@ export class WeatherService implements Initializable {
     return this.longitude;
   }
 
-  public async getIcon(weather: WeatherIndication) {
+  public getCurrentWeatherIcon(): Observable<any> {
+    return this.currentWeatherIcon$;
+  }
+
+  public setCurrentWeatherIcon(icon: any): void {
+    this.currentWeatherIcon$.next(icon);
+  }
+
+  public async initializeWeatherIcon(weather: WeatherIndication) {
     let requestUrl = WeatherUrlInfo.IMG_URL_BASE.toString();
     switch(weather) {
       case WeatherIndication.CLOUDS:
@@ -77,12 +89,43 @@ export class WeatherService implements Initializable {
         break;
     }
 
-    const httpRequest = this.httpService.get(requestUrl);
-    return await getFirstFrom(httpRequest);
+    const httpRequest = this.httpService.getBlob(requestUrl);
+    const result = (await getFirstFrom<WeatherIconResponse>(httpRequest)).body;
+    this.setCurrentWeatherIcon(this.httpService.getImageFromBlob(result));
+  }
+
+  public getBackgroundImage(weather: WeatherIndication) {
+    let bgUrl = '/assets/'
+    switch(weather) {
+      case WeatherIndication.CLOUDS:
+        bgUrl += 'cloudfoot.jpg';
+        break;
+      case WeatherIndication.CLEAR:
+        bgUrl += 'sunnybg.jpg';
+        break;
+      case WeatherIndication.SNOW:
+        bgUrl += 'snow.jpg';
+        break;
+      case WeatherIndication.RAIN:
+        bgUrl += 'rainfoot.jpg';
+        break;
+      case WeatherIndication.DRIZZLE:
+        bgUrl += 'rainfoot.jpg';
+        break;
+      case WeatherIndication.THUNDERSTORM:
+        bgUrl += 'thunderfoot.jpg';
+        break;
+      case WeatherIndication.Fog:
+        bgUrl += 'fogfoot.jpg';
+        break;
+    }
+  
+    return bgUrl;
   }
 
   public async init(): Promise<boolean> {
     const weather = await this.getCurrentWeatherDataByZip('28226');
+    await this.initializeWeatherIcon(<WeatherIndication>weather.weather[0].main);
 
     if (weather?.coord) {
       this.latitude = weather.coord.lat;
