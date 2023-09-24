@@ -1,4 +1,4 @@
-import { Injectable, HostListener } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { WeatherService } from '../data/weather/weather.service';
 import { NewsService } from '../data/news/news.service';
 

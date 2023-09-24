@@ -1,0 +1,11 @@
+<div class="modal" *ngIf="(isModalActive$ | async)" @ngIfSlideInBottom>
+    <header class="modal__modal-header">
+        <button class="modal__close" (click)="close()">
+            <i class="material-icons modal__icon">close</i>
+        </button>
+    </header>
+    <div class="modal__component">
+        <ng-template modal></ng-template>
+    </div>
+</div>
+<div class="modal__overlay" *ngIf="(isModalActive$ | async)" @ngIfFadeIn></div>

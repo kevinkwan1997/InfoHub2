@@ -14,6 +14,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { QuickAccessComponent } from './components/main-page/quick-access/quick-access.component';
 import { QuickAccessButtonsComponent } from './components/main-page/quick-access/quick-access-buttons/quick-access-buttons.component';
+import { ModalComponent } from './components/modal/modal.component';
+import { ModalComponentComponent } from './components/modal/modal-component/modal-component.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { QuickAccessButtonsComponent } from './components/main-page/quick-access
     MainPageComponent,
     QuickAccessComponent,
     QuickAccessButtonsComponent,
+    ModalComponent,
+    ModalComponentComponent,
   ],
   imports: [
     BrowserModule,

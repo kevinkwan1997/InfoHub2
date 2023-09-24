@@ -2,11 +2,11 @@
 
 :host {
     position: absolute;
-    top: 100%;
+    top: 92%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 64rem;
-    height: 12rem;
+    width: 66rem;
+    height: 11rem;
 }
 
 .quick-access {
@@ -14,4 +14,8 @@
     height: 100%;
     border-radius: 1.2rem;
     background-color: rgba($color-white, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0 2rem;
 }

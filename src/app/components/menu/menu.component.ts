@@ -1,27 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { trigger, transition, style, animate, state } from '@angular/animations';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { slideInLeft } from '../animations/animations';
 
 @Component({
   selector: 'menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('slideMenu', [
-      state('false', style({
-        transform: 'translateX(-48rem)',
-        opactiy: 0,
-      })),
-      state('true', style({
-        transform: 'translateX(0)',
-        opacity: 1
-      })),
-      transition('true <=> false', animate('400ms ease-in-out')),
-    ])
-  ]
+  animations: [slideInLeft]
 })
 export class MenuComponent implements OnInit {
   constructor(

@@ -1,1 +1,8 @@
-<p>quick-access-buttons works!</p>
+<div class="quick-access-button" (click)="open()">
+    <div class="quick-access-button__icon-container">
+        <i class="material-icons quick-acesss-button__icon">{{ config.icon }}</i>
+    </div>
+    <p class="quick-access-button__subtext">
+        {{ config.subtext }}
+    </p>
+</div>

@@ -1,0 +1,61 @@
+@import '/src/styles/variables';
+
+.quick-access-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: $box-shadow-light;
+    padding: 1rem 1rem;
+    width: 8rem;
+    background-color: $color-white;
+    border-radius: 0.4rem;
+    transition: 0.25s ease-in;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        width: 8rem;
+        content: '';
+        position: absolute;
+        height: 100%;
+        background-color: $color-dark-shade;
+        transform: translateY(100%);
+        transition: 0.4s ease-in-out;
+        z-index: 1
+    }
+
+    &:hover {
+        transform: translateY(-0.5rem);
+        box-shadow: $box-shadow-light-hover;
+
+        &::before {
+            transform: translateY(0);
+        }
+
+        &> p {
+            color: $color-white;
+        }
+
+        &> .quick-access-button__icon {
+            background: $color-white;
+        }
+    }
+
+    &:active {
+        transform: translateY(0.2rem) scale(0.98);
+        box-shadow: none;
+    }
+
+    &__icon, &__icon-container {
+        z-index: 2;
+    }
+
+    &__subtext {
+        font-weight: 400;
+        letter-spacing: 0.2rem;
+        text-align: center;
+        z-index: 2;
+        transition: 0.4s ease-in-out;
+    }
+}
