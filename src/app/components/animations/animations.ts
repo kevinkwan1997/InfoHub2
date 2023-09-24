@@ -30,6 +30,19 @@ export const slideInLeft = trigger('slideInLeft', [
   transition('true <=> false', animate('400ms ease-in-out')),
 ])
 
+export const slideInTop = trigger('slideInTop', [
+  state('true', style({
+    transform: 'translateY(-12rem)',
+    opactiy: 0,
+  })),
+  state('false', style({
+    transform: 'translateY(0)',
+    opacity: 1
+  })),
+  transition('true <=> false', animate('400ms ease-in-out')),
+])
+
+
 export const openModal = trigger('openModal', [
   transition(
     ':enter', 
@@ -47,6 +60,30 @@ export const openModal = trigger('openModal', [
               style({ height: 0, opacity: 0 }))
     ]
   )
+])
+
+export const zoom = trigger('zoom', [
+  state('true', style({
+    transform: 'scale(1.08)',
+    opactiy: 0,
+  })),
+  state('false', style({
+    transform: 'scale(1)',
+    opacity: 1
+  })),
+  transition('true <=> false', animate('400ms ease-in-out')),
+])
+
+export const zoomAbs = trigger('zoomAbs', [
+  state('true', style({
+    transform: 'translate(-50%, -50%) scale(1.2)',
+    opactiy: 0,
+  })),
+  state('false', style({
+    transform: 'translate(-50%, -50%) scale(1)',
+    opacity: 1
+  })),
+  transition('true <=> false', animate('500ms ease-in')),
 ])
 
 // ngIf animations
@@ -85,6 +122,44 @@ export const ngIfSlideInBottom = trigger('ngIfSlideInBottom', [
       style({ transform: 'translateY(0)' }),
       animate('0.75s ease-in-out', 
               style({ transform: 'translateY(200%)' }))
+    ]
+  )
+])
+
+export const ngIfSlideInBottomAbs = trigger('ngIfSlideInBottomAbs', [
+  transition(
+    ':enter', 
+    [
+      style({ transform: 'translate(-50%, 200%' }),
+      animate('0.75s ease-in-out', 
+              style({ transform: 'translate(-50%0, 0%)' }))
+    ]
+  ),
+  transition(
+    ':leave', 
+    [
+      style({ transform: 'translate(-50%0, 0%)' }),
+      animate('0.75s ease-in-out', 
+              style({ transform: 'translate(-50%, 200%)' }))
+    ]
+  )
+])
+
+export const ngIfSlideInTop = trigger('ngIfSlideInTop', [
+  transition(
+    ':enter', 
+    [
+      style({ transform: 'translateY(-200%)' }),
+      animate('0.75s ease-in-out', 
+              style({ transform: 'translateY(0)' }))
+    ]
+  ),
+  transition(
+    ':leave', 
+    [
+      style({ transform: 'translateY(0)' }),
+      animate('0.75s ease-in-out', 
+              style({ transform: 'translateY(-200%)' }))
     ]
   )
 ])

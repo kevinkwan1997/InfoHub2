@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ModalService } from 'src/app/services/application/modal.service';
 
 @Component({
   selector: 'main-header',
@@ -6,6 +8,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent {
-  constructor() {}
+export class HeaderComponent implements OnInit {
+  constructor(private modalService: ModalService) {}
+
+  public isModalActive$!: Observable<boolean>;
+
+  public ngOnInit(): void {
+    this.isModalActive$ = this.modalService.isModalActiveObservable();
+  }
 }

@@ -2,11 +2,12 @@
 
 :host {
     position: absolute;
-    top: 92%;
+    top: 88%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 66rem;
     height: 11rem;
+    z-index: 10;
 }
 
 .quick-access {
@@ -17,5 +18,5 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding: 0 2rem;
+    padding: 0 1rem;
 }

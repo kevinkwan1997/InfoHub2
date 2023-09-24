@@ -3,13 +3,13 @@
 :host {
     height: $header-height;
     width: 100%;
-    background-color: rgba($color-white, 0.2);
+    background-color: rgba($color-white, 1);
     position: absolute;
     top: 0;
-    z-index: 4;
+    z-index: 5;
 }
 
-.header {
+.main-header {
     height: 100%;
     width: 100%;
     display: flex;

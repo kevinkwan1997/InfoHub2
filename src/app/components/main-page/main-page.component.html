@@ -1,4 +1,5 @@
-<div class="main-page">
-    <h1 class="main-page__welcome">Welcome.</h1>
-    <quick-access></quick-access>
+<div class="main-page" *ngIf="{ isModalOpen: isModalOpen$ | async } as data">
+    <div class="main-page__background" [@zoom]="data.isModalOpen ? true : false"></div>
+    <h1 class="main-page__welcome" [@zoomAbs]="data.isModalOpen ? true : false">Welcome.</h1>
+    <quick-access *ngIf="data.isModalOpen ? false : true" @ngIfSlideInBottomAbs></quick-access>
 </div>
