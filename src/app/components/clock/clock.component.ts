@@ -9,4 +9,8 @@ import { ModalComponent } from 'src/app/interface/components/modal.interface';
 })
 export class ClockComponent implements ModalComponent {
   @Input() public title!: string;
+
+  public ngOnInit(): void {
+
+  }
 }

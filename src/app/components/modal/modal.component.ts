@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { Observable, map, of } from 'rxjs';
 import { ModalDirective } from 'src/app/directive/modal.directive';
 import { ModalService } from 'src/app/services/application/modal.service';
 import { ngIfFadeIn, ngIfSlideInBottom } from '../animations/animations';
 import { ActiveModalParams } from 'src/app/interface/components/modal.interface';
+
+// All data that needs change detection will need to be an observable for this to work due to it being a dynamically generated component.
+// Only async pipe and subscription will run change detection
 
 @Component({
   selector: 'modal',
@@ -17,12 +20,8 @@ import { ActiveModalParams } from 'src/app/interface/components/modal.interface'
 })
 export class ModalComponent implements OnInit {
   constructor(
-    protected injector: Injector
-  ) {
-    this.modalService = this.injector.get(ModalService);
-  }
-
-  protected modalService!: ModalService;
+    private modalService: ModalService,
+  ) {}
 
   @ViewChild(ModalDirective, { static: false }) set modal(modal: ModalDirective) {
     if (modal) {
@@ -32,11 +31,13 @@ export class ModalComponent implements OnInit {
   };
 
   public isModalActive$!: Observable<boolean>;
-  public activeModal$!: Observable<ActiveModalParams>;
+  public openModal$!: Observable<ActiveModalParams>;
+  public activeModals$!: Observable<Record<string, ActiveModalParams>>;
 
   public ngOnInit(): void {
     this.isModalActive$ = this.modalService.isModalActiveObservable();
-    this.activeModal$ = this.modalService.getActiveModal();
+    this.openModal$ = this.modalService.getOpenModal();
+    this.activeModals$ = this.modalService.getActiveModals();
   }
 
   public close(): void {

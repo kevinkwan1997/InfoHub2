@@ -1,0 +1,11 @@
+@import '/src/styles/variables';
+
+:host {
+    width: 100%;
+    height: calc(100vh - $modal-tab-height);
+}
+
+.full-weather {
+    width: 100%;
+    height: 100%;
+}

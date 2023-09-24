@@ -26,4 +26,9 @@ export class HttpService {
     const imageUrl = this.sanitizer.bypassSecurityTrustUrl(unsafeImageUrl);
     return imageUrl;
   }
+
+  public getDataFromBlob(blob: Blob) {
+    const unsafeImageUrl = URL.createObjectURL(blob);
+    return this.sanitizer.bypassSecurityTrustHtml(unsafeImageUrl);
+  }
 }

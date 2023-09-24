@@ -1,1 +1,3 @@
-<p>full-weather works!</p>
+<div class="full-weather">
+    <full-weather-hourly *ngIf="hourlyWeather$ | async as hourlyWeather" [hourlyWeather]="hourlyWeather"></full-weather-hourly>
+</div>

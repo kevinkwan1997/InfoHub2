@@ -4,6 +4,7 @@ import { WeatherService } from 'src/app/services/data/weather/weather.service';
 import { Observable } from 'rxjs';
 import { Weather } from 'src/app/interface/data/weather';
 import { TextService } from 'src/app/services/text/text.service';
+import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 
 @Component({
   selector: 'weather',
@@ -25,7 +26,7 @@ export class WeatherComponent implements OnInit, BaseWidget {
     public async ngOnInit(){
       this.currentIcon$ = this.weatherService.getCurrentWeatherIcon();
       const currentWeather = await this.weatherService.getCurrentWeatherDataByZip('28226');
-      this.currentWeather.set(currentWeather);
+      this.currentWeather.set(await getFirstFrom(currentWeather));
       // this.currentBg = this.weatherService.getBackgroundImage(<WeatherIndication>currentWeather.weather[0].main);
     }
 

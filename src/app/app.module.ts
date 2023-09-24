@@ -21,6 +21,8 @@ import { FullWeatherComponent } from './components/weather/full-weather/full-wea
 import { ClockComponent } from './components/clock/clock.component';
 import { AboutComponent } from './components/about/about.component';
 import { ModalDirective } from './directive/modal.directive';
+import { ModalTabComponent } from './components/modal/modal-tab/modal-tab.component';
+import { FullWeatherHourlyComponent } from './components/weather/full-weather/full-weather-hourly/full-weather-hourly.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { ModalDirective } from './directive/modal.directive';
     ClockComponent,
     AboutComponent,
     ModalDirective,
+    ModalTabComponent,
+    FullWeatherHourlyComponent,
   ],
   imports: [
     BrowserModule,

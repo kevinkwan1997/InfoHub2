@@ -1,6 +1,5 @@
-import { Injectable, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Injectable, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 import { ActiveModalParams, ModalComponent } from 'src/app/interface/components/modal.interface';
 
 @Injectable({
@@ -10,32 +9,45 @@ export class ModalService {
   constructor() { }
 
   private isModalActive$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private activeModals$: BehaviorSubject<ActiveModalParams[]> = new BehaviorSubject<ActiveModalParams[]>([]);
-  private activeModal$: BehaviorSubject<ActiveModalParams> = new BehaviorSubject<ActiveModalParams>({
+  private activeModals$: BehaviorSubject<Record<string, ActiveModalParams>> = new BehaviorSubject({});
+  private openModal$: BehaviorSubject<ActiveModalParams> = new BehaviorSubject<ActiveModalParams>({
+    icon: '',
     title: '',
     component: null,
   });
   private viewContainerRef!: ViewContainerRef;
 
-  public getActiveModal(): Observable<ActiveModalParams> {
-    return this.activeModal$;
-  }
-  
-  public async setModalActive(viewContainerRef: ActiveModalParams) {
-    let modals = await getFirstFrom(this.activeModals$);
-    modals = [
-      ...modals,
-      viewContainerRef
-    ]
-    this.activeModals$.next(modals);
+  public getOpenModal(): Observable<ActiveModalParams> {
+    return this.openModal$.asObservable();
   }
 
-  public setActiveModal$(params: ActiveModalParams): void {
-    if (!this.activeModal$) {
-      this.activeModal$ = new BehaviorSubject(params);
+  public getActiveModals(): Observable<Record<string, ActiveModalParams>> {
+    return this.activeModals$.asObservable();
+  }
+  
+  public setModalActive(params: ActiveModalParams) {
+    const activeModals: Record<string, ActiveModalParams> = {...this.activeModals$.getValue()};
+    if (!activeModals[params.title]) {
+      activeModals[params.title] = params;
+    }
+    this.activeModals$.next(activeModals);
+  }
+
+  public setModalInactive(params: ActiveModalParams) {
+    const activeModals = {...this.activeModals$.getValue()};
+    if (activeModals[params.title]) {
+      delete activeModals[params.title];
+    }
+    this.activeModals$.next(activeModals);
+  }
+
+  public setOpenModal$(params: ActiveModalParams): void {
+    if (!this.openModal$) {
+      this.openModal$ = new BehaviorSubject(params);
       return;
     }
-    this.activeModal$.next(params);
+    this.setModalActive(params);
+    this.openModal$.next(params);
   }
 
   public setViewContainerRef(ref: ViewContainerRef) {
@@ -51,7 +63,7 @@ export class ModalService {
   }
 
   public async openModal(): Promise<void> {
-    if (!this.activeModal$.getValue()) {
+    if (!this.openModal$.getValue()) {
       return;
     }
 
@@ -59,7 +71,7 @@ export class ModalService {
   }
 
   public createComponentInstance() {
-    const activeModal = this.activeModal$.getValue();
+    const activeModal = this.openModal$.getValue();
     const inputs = activeModal.inputs;
     const ref = this.viewContainerRef.createComponent<ModalComponent>(activeModal.component);
     if (inputs && Object.keys(inputs).length) {
@@ -67,6 +79,10 @@ export class ModalService {
         ref.instance[key] = inputs[key];
       })
     }
+    if (ref.instance.ngOnInit) {
+      ref.instance.ngOnInit();
+    }
+    ref.injector.get(ChangeDetectorRef).detectChanges();
   }
 
   public isViewContainerRefSet(): boolean {

@@ -4,7 +4,7 @@ import { TextService } from '../../text/text.service';
 import { HttpService } from '../../http.service';
 import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 
-import { Weather, WeatherIconResponse } from 'src/app/interface/data/weather';
+import { Weather, WeatherHourlyResponse, WeatherIconResponse } from 'src/app/interface/data/weather';
 import { Initializable } from 'src/app/interface/data/initializable';
 import { Observable, ReplaySubject } from 'rxjs';
 
@@ -21,8 +21,10 @@ export class WeatherService implements Initializable {
   private longitude!: number;
 
   private currentWeatherIcon$: ReplaySubject<any> = new ReplaySubject();
+  private currentWeather$: ReplaySubject<Weather> = new ReplaySubject();
+  private currentHourlyWeather$: ReplaySubject<WeatherHourlyResponse[]> = new ReplaySubject();
 
-  public async getCurrentWeatherDataByZip(zipCode: string): Promise<Weather> {
+  public getCurrentWeatherDataByZip(zipCode: string): Observable<Weather> {
     const requestUrl = WeatherUrlInfo.URL_BASE
       + WeatherDataTypes.CURRENT_WEATHER
       + this.textService.replace(WeatherQueryParams.ZIP_US, zipCode)
@@ -31,10 +33,10 @@ export class WeatherService implements Initializable {
       + WeatherUrlInfo.API_KEY
     
     const httpRequest = this.httpService.get<Weather>(requestUrl);
-    return await getFirstFrom(httpRequest);
+    return httpRequest;
   }
 
-  public async getHourlyDataByZip(): Promise<any> {
+  public getHourlyDataByZip(): Observable<any> {
     const requestUrl = WeatherUrlInfo.URL_BASE
       + WeatherDataTypes.FORECAST_HOURLY
       + this.textService.replace(WeatherQueryParams.LAT, this.latitude.toString())
@@ -44,7 +46,15 @@ export class WeatherService implements Initializable {
       + WeatherUrlInfo.API_KEY
 
     const httpRequest = this.httpService.getBlob(requestUrl);
-    return await getFirstFrom(httpRequest);
+    return httpRequest;
+  }
+
+  public getCurrentWeather(): Observable<Weather> {
+    return this.currentWeather$;
+  }
+
+  public getHourlyWeather(): Observable<WeatherHourlyResponse[]> {
+    return this.currentHourlyWeather$;
   }
 
   public getLatitude(): number {
@@ -59,8 +69,45 @@ export class WeatherService implements Initializable {
     return this.currentWeatherIcon$;
   }
 
+  public getBackgroundImage(weather: WeatherIndication) {
+    let bgUrl = '/assets/'
+    switch(weather) {
+      case WeatherIndication.CLOUDS:
+        bgUrl += 'cloudfoot.jpg';
+        break;
+      case WeatherIndication.CLEAR:
+        bgUrl += 'sunnybg.jpg';
+        break;
+      case WeatherIndication.SNOW:
+        bgUrl += 'snow.jpg';
+        break;
+      case WeatherIndication.RAIN:
+        bgUrl += 'rainfoot.jpg';
+        break;
+      case WeatherIndication.DRIZZLE:
+        bgUrl += 'rainfoot.jpg';
+        break;
+      case WeatherIndication.THUNDERSTORM:
+        bgUrl += 'thunderfoot.jpg';
+        break;
+      case WeatherIndication.Fog:
+        bgUrl += 'fogfoot.jpg';
+        break;
+    }
+  
+    return bgUrl;
+  }
+
   public setCurrentWeatherIcon(icon: any): void {
     this.currentWeatherIcon$.next(icon);
+  }
+
+  public setCurrentWeather(weather: Weather): void {
+    this.currentWeather$.next(weather);
+  }
+
+  public setCurrentHourlyWeather(weather: any): void {
+    this.currentHourlyWeather$.next(weather);
   }
 
   public async initializeWeatherIcon(weather: WeatherIndication) {
@@ -94,42 +141,17 @@ export class WeatherService implements Initializable {
     this.setCurrentWeatherIcon(this.httpService.getImageFromBlob(result));
   }
 
-  public getBackgroundImage(weather: WeatherIndication) {
-    let bgUrl = '/assets/'
-    switch(weather) {
-      case WeatherIndication.CLOUDS:
-        bgUrl += 'cloudfoot.jpg';
-        break;
-      case WeatherIndication.CLEAR:
-        bgUrl += 'sunnybg.jpg';
-        break;
-      case WeatherIndication.SNOW:
-        bgUrl += 'snow.jpg';
-        break;
-      case WeatherIndication.RAIN:
-        bgUrl += 'rainfoot.jpg';
-        break;
-      case WeatherIndication.DRIZZLE:
-        bgUrl += 'rainfoot.jpg';
-        break;
-      case WeatherIndication.THUNDERSTORM:
-        bgUrl += 'thunderfoot.jpg';
-        break;
-      case WeatherIndication.Fog:
-        bgUrl += 'fogfoot.jpg';
-        break;
-    }
-  
-    return bgUrl;
-  }
-
   public async init(): Promise<boolean> {
-    const weather = await this.getCurrentWeatherDataByZip('28226');
+    const weather = await getFirstFrom(this.getCurrentWeatherDataByZip('28226'));
     await this.initializeWeatherIcon(<WeatherIndication>weather.weather[0].main);
 
     if (weather?.coord) {
       this.latitude = weather.coord.lat;
       this.longitude = weather.coord.lon;
+      const hourlyWeatherUrl = (await getFirstFrom(this.getHourlyDataByZip())).url;
+      const hourlyWeather = (await getFirstFrom(this.httpService.get<any>(hourlyWeatherUrl))).hourly;
+      this.setCurrentWeather(weather);
+      this.setCurrentHourlyWeather(hourlyWeather);
       return Promise.resolve(true);
     }
     return Promise.resolve(false);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
 @Component({
@@ -7,6 +7,10 @@ import { ModalComponent } from 'src/app/interface/components/modal.interface';
   styleUrls: ['./task-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TaskListComponent implements ModalComponent {
+export class TaskListComponent implements ModalComponent, OnInit {
   @Input() public title!: string;
+
+  public ngOnInit(): void {
+    
+  }
 }

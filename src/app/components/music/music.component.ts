@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
 @Component({
@@ -7,8 +7,12 @@ import { ModalComponent } from 'src/app/interface/components/modal.interface';
   styleUrls: ['./music.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MusicComponent implements ModalComponent {
+export class MusicComponent implements ModalComponent, OnInit {
   @Input() public set title(title: string) {
     console.log(title);
   };
+
+  public ngOnInit(): void {
+    
+  }
 }
