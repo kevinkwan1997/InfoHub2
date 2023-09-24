@@ -16,6 +16,11 @@ import { QuickAccessComponent } from './components/main-page/quick-access/quick-
 import { QuickAccessButtonsComponent } from './components/main-page/quick-access/quick-access-buttons/quick-access-buttons.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { ModalComponentComponent } from './components/modal/modal-component/modal-component.component';
+import { MusicComponent } from './components/music/music.component';
+import { FullWeatherComponent } from './components/weather/full-weather/full-weather.component';
+import { ClockComponent } from './components/clock/clock.component';
+import { AboutComponent } from './components/about/about.component';
+import { ModalDirective } from './directive/modal.directive';
 
 @NgModule({
   declarations: [
@@ -31,12 +36,20 @@ import { ModalComponentComponent } from './components/modal/modal-component/moda
     QuickAccessButtonsComponent,
     ModalComponent,
     ModalComponentComponent,
+    MusicComponent,
+    FullWeatherComponent,
+    ClockComponent,
+    AboutComponent,
+    ModalDirective,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     KtdGridModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+  ],
+  exports: [
+    ModalDirective,
   ],
   providers: [],
   bootstrap: [AppComponent]

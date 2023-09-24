@@ -22,6 +22,9 @@ export class MenuComponent implements OnInit {
   public ngOnInit(): void {
     this.applicationService.getDocumentClickedTarget()
       .subscribe((target) => {
+        if (!this.button) {
+          return;
+        }
         if (this.button.nativeElement.contains(target) && !this.isOptionsShown$.getValue()) {
           this.openMenu();
           return;

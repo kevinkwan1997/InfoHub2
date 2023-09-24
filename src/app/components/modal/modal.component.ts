@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ModalDirective } from 'src/app/directives/modal.directive';
+import { Observable, tap } from 'rxjs';
+import { ModalDirective } from 'src/app/directive/modal.directive';
 import { ModalService } from 'src/app/services/application/modal.service';
 import { ngIfFadeIn, ngIfSlideInBottom } from '../animations/animations';
 
@@ -16,14 +16,19 @@ import { ngIfFadeIn, ngIfSlideInBottom } from '../animations/animations';
 })
 export class ModalComponent implements OnInit {
   constructor(
-    private injector: Injector
+    protected injector: Injector
   ) {
     this.modalService = this.injector.get(ModalService);
   }
 
   protected modalService!: ModalService;
 
-  @ViewChild(ModalDirective, { static: true }) modal!: ModalDirective;
+  @ViewChild(ModalDirective, { static: false }) set modal(modal: ModalDirective) {
+    if (modal) {
+      this.modalService.setViewContainerRef(modal.viewContainerRef);
+      this.modalService.openModal();
+    }
+  };
 
   public isModalActive$!: Observable<boolean>;
 

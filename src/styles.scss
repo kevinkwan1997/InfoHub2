@@ -18,6 +18,7 @@ html {
     scroll-behavior: smooth;
     background-color: #F5F2F3;
     height: auto;
+    overflow: hidden;
 
     // @include respond(tab-land) {
     //     font-size: 57.5%

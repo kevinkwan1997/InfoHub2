@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
 @Component({
-  selector: 'task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss'],
+  selector: 'app-full-weather',
+  templateUrl: './full-weather.component.html',
+  styleUrls: ['./full-weather.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TaskListComponent implements ModalComponent {
+export class FullWeatherComponent implements ModalComponent {
 
 }

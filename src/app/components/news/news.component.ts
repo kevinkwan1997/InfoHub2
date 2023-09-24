@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Injector } from '@angular/core';
-import { ModalComponent } from '../modal/modal.component';
+import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
 @Component({
   selector: 'news',
@@ -7,8 +7,7 @@ import { ModalComponent } from '../modal/modal.component';
   styleUrls: ['./news.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewsComponent extends ModalComponent {
-  constructor(injector: Injector) {
-    super(injector);
+export class NewsComponent implements ModalComponent {
+  constructor() {
   }
 }

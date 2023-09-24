@@ -1,6 +1,7 @@
-import { ViewContainerRef } from '@angular/core';
+export interface ActiveModalParams {
+    title: string;
+    component: any;
+}
 
-export interface ModalViewContainerRef {
-    id: number;
-    viewContainerRef: ViewContainerRef;
+export interface ModalComponent {
 }
