@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { ModalDirective } from 'src/app/directive/modal.directive';
 import { ModalService } from 'src/app/services/application/modal.service';
 import { ngIfFadeIn, ngIfSlideInBottom } from '../animations/animations';
+import { ActiveModalParams } from 'src/app/interface/components/modal.interface';
 
 @Component({
   selector: 'modal',
@@ -31,9 +32,11 @@ export class ModalComponent implements OnInit {
   };
 
   public isModalActive$!: Observable<boolean>;
+  public activeModal$!: Observable<ActiveModalParams>;
 
   public ngOnInit(): void {
     this.isModalActive$ = this.modalService.isModalActiveObservable();
+    this.activeModal$ = this.modalService.getActiveModal();
   }
 
   public close(): void {

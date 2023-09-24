@@ -11,8 +11,15 @@ export class ModalService {
 
   private isModalActive$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private activeModals$: BehaviorSubject<ActiveModalParams[]> = new BehaviorSubject<ActiveModalParams[]>([]);
-  private activeModal$!: BehaviorSubject<ActiveModalParams>;
+  private activeModal$: BehaviorSubject<ActiveModalParams> = new BehaviorSubject<ActiveModalParams>({
+    title: '',
+    component: null,
+  });
   private viewContainerRef!: ViewContainerRef;
+
+  public getActiveModal(): Observable<ActiveModalParams> {
+    return this.activeModal$;
+  }
   
   public async setModalActive(viewContainerRef: ActiveModalParams) {
     let modals = await getFirstFrom(this.activeModals$);
@@ -23,16 +30,16 @@ export class ModalService {
     this.activeModals$.next(modals);
   }
 
-  public isModalActiveObservable(): Observable<boolean> {
-    return this.isModalActive$.asObservable();
-  }
-
   public setActiveModal$(params: ActiveModalParams): void {
     if (!this.activeModal$) {
       this.activeModal$ = new BehaviorSubject(params);
       return;
     }
     this.activeModal$.next(params);
+  }
+
+  public setViewContainerRef(ref: ViewContainerRef) {
+    this.viewContainerRef = ref;
   }
 
   public closeContainer(): void {
@@ -51,16 +58,22 @@ export class ModalService {
     this.createComponentInstance();
   }
 
-  public setViewContainerRef(ref: ViewContainerRef) {
-    this.viewContainerRef = ref;
-  }
-
   public createComponentInstance() {
-    this.viewContainerRef.createComponent<ModalComponent>(this.activeModal$.getValue().component);
+    const activeModal = this.activeModal$.getValue();
+    const inputs = activeModal.inputs;
+    const ref = this.viewContainerRef.createComponent<ModalComponent>(activeModal.component);
+    if (inputs && Object.keys(inputs).length) {
+      Object.keys(inputs).forEach((key) => {
+        ref.instance[key] = inputs[key];
+      })
+    }
   }
 
   public isViewContainerRefSet(): boolean {
     return !!this.viewContainerRef;
   }
 
+  public isModalActiveObservable(): Observable<boolean> {
+    return this.isModalActive$.asObservable();
+  }
 }

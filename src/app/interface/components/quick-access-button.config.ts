@@ -4,4 +4,5 @@ export interface QuickAccessButtonConfig {
     icon: string;
     subtext: string;
     component: ModalComponent;
+    inputs?: any;
 }

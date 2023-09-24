@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
 @Component({
@@ -10,4 +10,5 @@ import { ModalComponent } from 'src/app/interface/components/modal.interface';
 export class NewsComponent implements ModalComponent {
   constructor() {
   }
+  @Input() public title!: string;
 }

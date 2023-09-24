@@ -1,5 +1,6 @@
 <div class="modal" *ngIf="(isModalActive$ | async)" @ngIfSlideInBottom>
     <header class="modal__modal-header">
+        <h4 class="modal__title" *ngIf="(activeModal$ | async) as activeModal">{{ activeModal.title }}</h4>
         <button class="modal__close" (click)="close()">
             <i class="material-icons modal__icon">close</i>
         </button>

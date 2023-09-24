@@ -17,6 +17,16 @@
         background-color: $color-white;
         border-top-left-radius: 0.4rem;
         border-top-right-radius: 0.4rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__title {
+        font-size: 1.6rem;
+        font-weight: 400;
+        letter-spacing: 0.1rem;
+        margin: 0 2rem;
     }
     
     &__close {

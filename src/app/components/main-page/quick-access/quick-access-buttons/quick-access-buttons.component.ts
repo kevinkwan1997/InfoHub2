@@ -20,6 +20,7 @@ export class QuickAccessButtonsComponent {
     this.modalService.setActiveModal$({
       title: this.config.subtext,
       component: this.config.component,
+      inputs: this.config.inputs,
     });
   }
 }

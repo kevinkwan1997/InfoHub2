@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { QuickAccessButtonConfig } from 'src/app/interface/components/quick-access-button.config';
-import { ModalService } from 'src/app/services/application/modal.service';
 import { NewsComponent } from '../../news/news.component';
 import { MusicComponent } from '../../music/music.component';
 import { FullWeatherComponent } from '../../weather/full-weather/full-weather.component';
 import { ClockComponent } from '../../clock/clock.component';
 import { AboutComponent } from '../../about/about.component';
 import { TaskListComponent } from '../../task-list/task-list.component';
-import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
 @Component({
   selector: 'quick-access',
@@ -16,9 +14,7 @@ import { ModalComponent } from 'src/app/interface/components/modal.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QuickAccessComponent {
-  constructor(
-    private modalService: ModalService,
-  ) {}
+  constructor() {}
 
   public quickAccessConfigs: QuickAccessButtonConfig[] = [
     {
@@ -30,6 +26,9 @@ export class QuickAccessComponent {
       icon: 'headphones',
       subtext: 'Music',
       component: MusicComponent,
+      inputs: {
+        title: 'Music',
+      }
     },
     {
       icon: 'cloudy_snowing',
