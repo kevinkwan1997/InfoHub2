@@ -26,21 +26,20 @@ export class ModalComponent implements OnInit {
   @ViewChild(ModalDirective, { static: false }) set modal(modal: ModalDirective) {
     if (modal) {
       this.modalService.setViewContainerRef(modal.viewContainerRef);
-      this.modalService.openModal();
     }
   };
 
-  public isModalActive$!: Observable<boolean>;
+  public isModalContainerOpen$!: Observable<boolean>;
   public openModal$!: Observable<ActiveModalParams>;
   public activeModals$!: Observable<Record<string, ActiveModalParams>>;
 
   public ngOnInit(): void {
-    this.isModalActive$ = this.modalService.isModalActiveObservable();
+    this.isModalContainerOpen$ = this.modalService.isModalContainerOpenObservable();
     this.openModal$ = this.modalService.getOpenModal();
     this.activeModals$ = this.modalService.getActiveModals();
   }
 
-  public close(): void {
-    this.modalService.closeContainer();
+  public close(modal: ActiveModalParams): void {
+    this.modalService.closeModal(modal);
   }
 }

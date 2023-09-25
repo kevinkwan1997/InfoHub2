@@ -17,7 +17,7 @@ export class QuickAccessButtonsComponent {
 
   public open(): void {
     this.modalService.openContainer();
-    this.modalService.setOpenModal$({
+    this.modalService.openModal({
       icon: this.config.icon,
       title: this.config.subtext,
       component: this.config.component,

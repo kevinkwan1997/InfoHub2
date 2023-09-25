@@ -1,6 +1,7 @@
 import { Component, HostListener, Injector } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApplicationService } from './services/application/application.service';
+import { ModalService } from './services/application/modal.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ import { ApplicationService } from './services/application/application.service';
 export class AppComponent {
   constructor(
     private applicationService: ApplicationService,
+    private modalService: ModalService,
     public injector: Injector
   ) { }
 
@@ -18,10 +20,13 @@ export class AppComponent {
     this.applicationService.setDocumentClickedTarget$(event.target)
   }
 
+  public isModalContainerOpen$!: Observable<boolean>;
+
   public isApplicationLoaded$!: Observable<boolean>;
   public fadeState: string = 'visible';
 
   ngOnInit(): void {
+    this.isModalContainerOpen$ = this.modalService.isModalContainerOpenObservable();
     this.isApplicationLoaded$ = this.applicationService.isApplicationLoaded()
       .pipe(
         tap((isLoaded) => {

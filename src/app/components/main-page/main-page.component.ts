@@ -20,6 +20,6 @@ export class MainPageComponent implements OnInit {
   isModalOpen$!: Observable<boolean>;
 
   public ngOnInit(): void {
-    this.isModalOpen$ = this.modalService.isModalActiveObservable();
+    this.isModalOpen$ = this.modalService.isModalContainerOpenObservable();
   }
 }

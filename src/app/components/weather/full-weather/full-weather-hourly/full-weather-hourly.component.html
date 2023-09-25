@@ -9,6 +9,7 @@
                 <p class="full-weather-hourly__wind">Wind: {{ weather.wind_speed | milesPerHour }}</p>
             </div>
             <div class="full-weather-hourly__item--right">
+                <h1 class="full-weather-hourly__indication">{{ weather.weather[0].main }}</h1>
                 <img [src]="getIcon(weather)" alt="" class="full-weather-hourly__icon">
                 <p class="full-weather-hourly__hourly">{{ weather.temp | roundToWhole }}</p>
             </div>

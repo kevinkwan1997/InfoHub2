@@ -40,12 +40,21 @@
         }
     }
 
+    &__indication {
+        font-size: 3.6rem;
+        font-weight: 200;
+        letter-spacing: 0.2rem;
+        margin: auto 0;
+    }
+
     &__icon {
         margin: 0.5rem;
     }
 
     &__hourly {
-        font-size: 4.8rem;
+        font-size: 3.6rem;
         width: 5rem;
+        font-weight: 200;
+        margin: auto 0;
     }
 }
