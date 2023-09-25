@@ -1,7 +1,17 @@
 <div class="full-weather-hourly">
     <ul class="full-weather-hourly__list">
-        <li class="full-weather-hourly__list--item" *ngFor="let weather of hourlyWeather">
-            {{ weather.temp }}
+        <li class="full-weather-hourly__item" *ngFor="let weather of hourlyWeather" (click)="onClick(weather)">
+            <div class="full-weather-hourly__item--left">
+                <div class="full-weather-hourly__date">
+                    {{ weather.dt | time }}
+                </div>
+                <p class="full-weather-hourly__feelslike">Feels Like: {{ weather.feels_like | roundToWhole }}</p>
+                <p class="full-weather-hourly__wind">Wind: {{ weather.wind_speed | milesPerHour }}</p>
+            </div>
+            <div class="full-weather-hourly__item--right">
+                <img [src]="getIcon(weather)" alt="" class="full-weather-hourly__icon">
+                <p class="full-weather-hourly__hourly">{{ weather.temp | roundToWhole }}</p>
+            </div>
         </li>
     </ul>
 </div>

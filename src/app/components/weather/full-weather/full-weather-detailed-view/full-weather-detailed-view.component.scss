@@ -1,0 +1,22 @@
+@import '/src/styles/variables';
+
+:host {
+    height: 100%;
+    width: 100%;
+}
+
+.full-weather-detailed-view {
+    height: 100%;
+    box-shadow: $box-shadow-light;
+    display: flex;
+
+    &__banner {
+        max-height: 40%;
+        width: 100%;
+        box-shadow: $box-shadow-light;
+        background-image: url('../../../../../assets/sunnybg.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-blend-mode: multiply;
+    }
+}

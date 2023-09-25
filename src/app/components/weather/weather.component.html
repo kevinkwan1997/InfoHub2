@@ -1,4 +1,4 @@
-<div class="weather" *ngIf="currentIcon$ | async as currentIcon">
+<div class="weather" *ngIf="currentIcon">
     <img class="weather__icon" [src]="currentIcon"/>
     <div class="weather__left" *ngIf="currentWeather">
         <p class="weather__current-temp">{{ formatTemperature(currentWeather()?.main?.temp )}}</p>

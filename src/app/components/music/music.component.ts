@@ -9,7 +9,6 @@ import { ModalComponent } from 'src/app/interface/components/modal.interface';
 })
 export class MusicComponent implements ModalComponent, OnInit {
   @Input() public set title(title: string) {
-    console.log(title);
   };
 
   public ngOnInit(): void {

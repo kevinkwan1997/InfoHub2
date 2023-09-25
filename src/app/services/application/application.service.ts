@@ -3,6 +3,7 @@ import { WeatherService } from '../data/weather/weather.service';
 import { NewsService } from '../data/news/news.service';
 
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AssetService } from '../data/asset/asset.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class ApplicationService {
   constructor(
     private newsService: NewsService,
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    private assetService: AssetService,
   ) {
     this.init();
   }
@@ -22,6 +24,7 @@ export class ApplicationService {
     const initPromises = [
       this.newsService.init(),
       this.weatherService.init(),
+      this.assetService.init(),
     ];
 
     Promise.all(initPromises).then(() => {

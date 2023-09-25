@@ -70,6 +70,18 @@ export class ModalService {
     this.createComponentInstance();
   }
 
+  public replaceModal(params: ActiveModalParams): void {
+    const activeModal = this.openModal$.getValue();
+    const activeModals = this.activeModals$.getValue();
+    if (!activeModals[params.title]) {
+      this.setModalActive(params);
+      return;
+    }
+
+    this.viewContainerRef.detach(0);
+    const newRef = this.viewContainerRef.createComponent<ModalComponent>(activeModal.component);
+  }
+
   public createComponentInstance() {
     const activeModal = this.openModal$.getValue();
     const inputs = activeModal.inputs;

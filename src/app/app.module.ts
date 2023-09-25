@@ -23,6 +23,11 @@ import { AboutComponent } from './components/about/about.component';
 import { ModalDirective } from './directive/modal.directive';
 import { ModalTabComponent } from './components/modal/modal-tab/modal-tab.component';
 import { FullWeatherHourlyComponent } from './components/weather/full-weather/full-weather-hourly/full-weather-hourly.component';
+import { RoundToWholePipe } from './pipes/round-to-whole.pipe';
+import { MilesPerHourPipe } from './pipes/miles-per-hour.pipe';
+import { DatePipe } from './pipes/date.pipe';
+import { TimePipe } from './pipes/time.pipe';
+import { FullWeatherDetailedViewComponent } from './components/weather/full-weather/full-weather-detailed-view/full-weather-detailed-view.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +50,11 @@ import { FullWeatherHourlyComponent } from './components/weather/full-weather/fu
     ModalDirective,
     ModalTabComponent,
     FullWeatherHourlyComponent,
+    RoundToWholePipe,
+    MilesPerHourPipe,
+    DatePipe,
+    TimePipe,
+    FullWeatherDetailedViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +63,10 @@ import { FullWeatherHourlyComponent } from './components/weather/full-weather/fu
     BrowserAnimationsModule,
   ],
   exports: [
+    DatePipe,
+    RoundToWholePipe,
+    MilesPerHourPipe,
+    TimePipe,
     ModalDirective,
   ],
   providers: [],

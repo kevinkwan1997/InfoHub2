@@ -1,3 +1,5 @@
+import { WeatherIndication } from "src/app/enum/weather";
+
 export interface Weather {
     base: string;
     clouds: {
@@ -70,10 +72,11 @@ export interface WeatherHourlyResponse {
     wind_speed: number;
     wind_deg: number;
     wind_gust: number;
-    weather: {
-        id: number;
-        main: string;
-        description: string;
-        icon: string;
-    }
+    weather: WeatherInfo[];
+    icon?: any;
+}
+
+export interface WeatherIcon {
+    id: WeatherIndication;
+    image: any;
 }

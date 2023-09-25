@@ -1,3 +1,11 @@
 <div class="full-weather">
-    <full-weather-hourly *ngIf="hourlyWeather$ | async as hourlyWeather" [hourlyWeather]="hourlyWeather"></full-weather-hourly>
+    <full-weather-hourly 
+        *ngIf="hourlyWeather$ | async as hourlyWeather"
+        [hourlyWeather]="hourlyWeather">
+    </full-weather-hourly>
+    <full-weather-detailed-view 
+        *ngIf="selectedDetailedHourly$ | async as selectedDetailedHourly"
+        [hourlyWeather]="selectedDetailedHourly"
+        >
+    </full-weather-detailed-view>
 </div>

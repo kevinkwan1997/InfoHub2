@@ -26,5 +26,5 @@ export enum WeatherIndication {
     RAIN = 'Rain',
     DRIZZLE = 'Drizzle',
     THUNDERSTORM = 'Thunderstorm',
-    Fog = 'Fog',
+    FOG = 'Fog',
 }
