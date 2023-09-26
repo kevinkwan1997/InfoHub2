@@ -1,5 +1,4 @@
 <div class="full-weather">
-    <button class="test" (click)="close()">Testing</button>
     <full-weather-hourly 
         *ngIf="hourlyWeather$ | async as hourlyWeather"
         [hourlyWeather]="hourlyWeather">

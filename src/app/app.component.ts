@@ -20,13 +20,13 @@ export class AppComponent {
     this.applicationService.setDocumentClickedTarget$(event.target)
   }
 
-  public isModalContainerOpen$!: Observable<boolean>;
+  public isModalOpen$!: Observable<boolean>;
 
   public isApplicationLoaded$!: Observable<boolean>;
   public fadeState: string = 'visible';
 
   ngOnInit(): void {
-    this.isModalContainerOpen$ = this.modalService.isModalContainerOpenObservable();
+    this.isModalOpen$ = this.modalService.isModalOpen();
     this.isApplicationLoaded$ = this.applicationService.isApplicationLoaded()
       .pipe(
         tap((isLoaded) => {

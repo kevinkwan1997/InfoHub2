@@ -11,9 +11,9 @@ import { ModalService } from 'src/app/services/application/modal.service';
 export class HeaderComponent implements OnInit {
   constructor(private modalService: ModalService) {}
 
-  public isModalContainerOpen$!: Observable<boolean>;
+  public isModalOpen$!: Observable<boolean>;
 
   public ngOnInit(): void {
-    this.isModalContainerOpen$ = this.modalService.isModalContainerOpenObservable();
+    this.isModalOpen$ = this.modalService.isModalOpen();
   }
 }

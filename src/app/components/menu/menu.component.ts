@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application/application.service';
 import { ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { slideInLeft } from '../animations/animations';
+import { slideInLeft } from '../../animations/animations';
 
 @Component({
   selector: 'menu',

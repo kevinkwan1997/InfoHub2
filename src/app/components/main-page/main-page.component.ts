@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ModalService } from 'src/app/services/application/modal.service';
-import { ngIfSlideInBottomAbs, zoom, zoomAbs } from '../animations/animations';
+import { ngIfSlideInBottomAbs, zoom, zoomAbs } from '../../animations/animations';
 
 @Component({
   selector: 'main-page',
@@ -20,6 +20,6 @@ export class MainPageComponent implements OnInit {
   isModalOpen$!: Observable<boolean>;
 
   public ngOnInit(): void {
-    this.isModalOpen$ = this.modalService.isModalContainerOpenObservable();
+    this.isModalOpen$ = this.modalService.isModalOpen();
   }
 }

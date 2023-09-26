@@ -1,13 +1,14 @@
-<div class="modal" *ngIf="(isModalContainerOpen$ | async)" @ngIfSlideInBottom>
+<div class="modal" *ngIf="(isModalOpen$ | async)" @ngIfSlideInBottom>
     <header class="modal__modal-header">
-        <h4 class="modal__title" *ngIf="openModal$ | async as openModal">{{ openModal.title }}</h4>
+        <h4 class="modal__title"></h4>
         <button class="modal__close" (click)="close()">
-            <i class="material-icons modal__icon">close</i>
+            <i class="material-icons modal__icon"></i>
         </button>
     </header>
-    <modal-tab *ngIf="activeModals$ && activeModals$ | async as activeModals" [activeModals]="activeModals"></modal-tab>
+    <modal-tab ></modal-tab>
     <div class="modal__component">
-        <ng-template modal></ng-template>
+        <!-- <ng-template modal></ng-template> -->
+        <router-outlet></router-outlet>
     </div>
 </div>
-<div class="modal__overlay" *ngIf="(isModalContainerOpen$ | async)" @ngIfFadeIn></div>
+<div class="modal__overlay" *ngIf="(isModalOpen$ | async)" @ngIfFadeIn></div>

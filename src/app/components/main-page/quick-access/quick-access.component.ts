@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { QuickAccessButtonConfig } from 'src/app/interface/components/quick-access-button.config';
-import { NewsComponent } from '../../news/news.component';
-import { MusicComponent } from '../../music/music.component';
-import { FullWeatherComponent } from '../../weather/full-weather/full-weather.component';
+import { NewsComponent } from '../../modal/routes/news/news.component';
+import { MusicComponent } from '../../modal/routes/music/music.component';
+
 import { ClockComponent } from '../../clock/clock.component';
-import { AboutComponent } from '../../about/about.component';
-import { TaskListComponent } from '../../task-list/task-list.component';
+import { AboutComponent } from '../../modal/routes/about/about.component';
+import { TaskListComponent } from '../../modal/routes/task-list/task-list.component';
+import { FullWeatherComponent } from '../../modal/routes/full-weather/full-weather.component';
 
 @Component({
   selector: 'quick-access',
