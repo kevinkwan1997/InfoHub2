@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ActiveModalParams } from 'src/app/interface/components/modal.interface';
+import { NavigationService } from 'src/app/services/application/navigation.service';
 
 @Component({
   selector: 'modal-tab',
@@ -8,16 +9,14 @@ import { ActiveModalParams } from 'src/app/interface/components/modal.interface'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModalTabComponent {
-  constructor() {
+  constructor(
+    private navigationService: NavigationService
+  ) {
 
   }
-  @Input() public set activeModals(activeModals: Record<string, ActiveModalParams>) {
-    this.activeModalsArray = Object.entries(activeModals).map(([k, v]) => ({
-      icon: v.icon,
-      title: v.title,
-      component: v.component
-    }))
-  };
+  @Input() public activeModals!: ActiveModalParams[];
 
-  public activeModalsArray!: ActiveModalParams[];
+  public navigate(activeModal: any) {
+    this.navigationService.navigate(activeModal.title);
+  }
 }

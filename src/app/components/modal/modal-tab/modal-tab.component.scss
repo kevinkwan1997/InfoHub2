@@ -4,28 +4,29 @@
     position: absolute;
     right: 0;
     bottom: 0%;
-    width: 50%;
+    max-width: 33%;
+    margin: 2rem;
     height: $modal-tab-height;
+    border-radius: 0.5rem;
     border-right: none;
+    z-index: 10;
 }
 
 .modal-tab {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-overflow: ellipsis;
     height: 100%;
     border-bottom: none;
-    background-color: $color-midnight;
+    background-color: rgba($color-midnight, 0.75);
+    padding: 2rem;
     
     &__description {
         color: $color-white;
-        width: 100%;
-        height: 100%;
         font-size: 2.4rem;
         font-weight: 200;
-        z-index: 10;
         text-align: center;
     }
 

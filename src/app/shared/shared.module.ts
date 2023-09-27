@@ -4,13 +4,15 @@ import { MilesPerHourPipe } from './pipes/miles-per-hour.pipe';
 import { RoundToWholePipe } from './pipes/round-to-whole.pipe';
 import { TimePipe } from './pipes/time.pipe';
 import { DatePipe } from './pipes/date.pipe';
+import { FahrenheitPipe } from './pipes/fahrenheit.pipe';
 
 @NgModule({
   declarations: [
     DatePipe,
     MilesPerHourPipe,
     RoundToWholePipe,
-    TimePipe, 
+    TimePipe,
+    FahrenheitPipe, 
   ],
   imports: [
     CommonModule,
@@ -20,6 +22,7 @@ import { DatePipe } from './pipes/date.pipe';
     MilesPerHourPipe,
     RoundToWholePipe,
     TimePipe,
+    FahrenheitPipe
   ]
 })
 export class SharedModule { }

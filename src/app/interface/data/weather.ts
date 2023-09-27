@@ -41,7 +41,7 @@ export interface WeatherInfo {
     description: string;
     icon: string;
     id: number;
-    main: string;
+    main: WeatherIndication;
 }
 
 export interface CoordinateData {

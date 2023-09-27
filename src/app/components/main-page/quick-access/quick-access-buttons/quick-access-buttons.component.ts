@@ -16,6 +16,9 @@ export class QuickAccessButtonsComponent {
   @Input() public config!: QuickAccessButtonConfig;
 
   public open(): void {
-    this.modalService.openModal(this.config.subtext);
+    this.modalService.openModal({
+      title: this.config.subtext,
+      icon: this.config.icon,
+    });
   }
 }

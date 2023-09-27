@@ -4,6 +4,8 @@ import { NewsService } from '../data/news/news.service';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AssetService } from '../data/asset/asset.service';
+import { LogService } from '../log.service';
+import { InitializableReturnValue } from 'src/app/interface/data/initializable';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,7 @@ export class ApplicationService {
     private newsService: NewsService,
     private weatherService: WeatherService,
     private assetService: AssetService,
+    private logService: LogService,
   ) {
     this.init();
   }
@@ -20,16 +23,18 @@ export class ApplicationService {
   private isApplicationLoaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private documentClickedTarget$: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  public init() {
+  public async init() {
     const initPromises = [
-      this.newsService.init(),
-      this.weatherService.init(),
-      this.assetService.init(),
+      this.newsService,
+      this.weatherService,
+      this.assetService,
     ];
 
-    Promise.all(initPromises).then(() => {
-      this.isApplicationLoaded$.next(true);
-    })
+    for (const service of initPromises) {
+      const result = await service.init();
+      this.logService.info(result.serviceName, ' Finished initializing');
+    }
+    this.isApplicationLoaded$.next(true);
   }
 
   public isApplicationLoaded(): Observable<boolean> {

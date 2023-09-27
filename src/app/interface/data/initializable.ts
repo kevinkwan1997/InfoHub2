@@ -1,3 +1,8 @@
 export interface Initializable {
-    init: () => Promise<boolean>
+    init: () => Promise<InitializableReturnValue>
+}
+
+export interface InitializableReturnValue {
+    serviceName: string;
+    status: boolean;
 }

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { ModalService } from 'src/app/services/application/modal.service';
 import { ngIfFadeIn, ngIfSlideInBottom, routeFadeIn } from '../../animations/animations';
 import { Location } from '@angular/common';
+import { ActiveModalParams } from 'src/app/interface/components/modal.interface';
 
 // All data that needs change detection will need to be an observable for this to work due to it being a dynamically generated component.
 // Only async pipe and subscription will run change detection
@@ -25,10 +26,12 @@ export class ModalComponent implements OnInit {
   ) {}
 
   public isModalOpen$!: Observable<boolean>;
+  public activeModals$!: Observable<ActiveModalParams[]>;
   public url!: string;
 
   public ngOnInit(): void {
     this.isModalOpen$ = this.modalService.isModalOpen();
+    this.activeModals$ = this.modalService.getActiveModals();
     this.location.onUrlChange((url, state) => {
       this.url = url.replace('/', '');
     })

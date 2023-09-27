@@ -5,7 +5,7 @@
             <i class="material-icons modal__icon"></i>
         </button>
     </header>
-    <modal-tab ></modal-tab>
+    <modal-tab *ngIf="(activeModals$ | async) as activeModals" [activeModals]="activeModals"></modal-tab>
     <div class="modal__component" [@routeFadeIn]="outlet.isActivated ? outlet.activatedRoute : ''">
         <!-- <ng-template modal></ng-template> -->
         <router-outlet #outlet="outlet"></router-outlet>

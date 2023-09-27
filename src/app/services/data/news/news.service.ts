@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Initializable } from 'src/app/interface/data/initializable';
+import { Initializable, InitializableReturnValue } from 'src/app/interface/data/initializable';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,10 @@ import { Initializable } from 'src/app/interface/data/initializable';
 export class NewsService implements Initializable {
   constructor() { }
 
-  public async init(): Promise<boolean> {
-    return Promise.resolve(false);
+  public async init(): Promise<InitializableReturnValue> {
+    return Promise.resolve({
+      serviceName: NewsService.name,
+      status: true,
+    });
   }
 }

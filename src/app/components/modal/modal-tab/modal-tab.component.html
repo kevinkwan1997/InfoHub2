@@ -1,7 +1,7 @@
-<div class="modal-tab">
+<div class="modal-tab" *ngIf="activeModals && activeModals.length > 1">
     <p class="modal-tab__description">Active</p>
     <ul class="modal-tab__tab-list">
-        <li class="modal-tab__tab-item" *ngFor="let activeModal of activeModalsArray">
+        <li class="modal-tab__tab-item" *ngFor="let activeModal of activeModals" (click)="navigate(activeModal)">
             <button class="modal-tab__button">
                 <i class="modal-tab__icon material-icons">{{ activeModal.icon }}</i>
             </button>

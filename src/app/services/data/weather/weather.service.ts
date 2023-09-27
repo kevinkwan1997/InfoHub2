@@ -5,7 +5,7 @@ import { HttpService } from '../../http.service';
 import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 
 import { Weather, WeatherHourlyResponse, WeatherIconResponse } from 'src/app/interface/data/weather';
-import { Initializable } from 'src/app/interface/data/initializable';
+import { Initializable, InitializableReturnValue } from 'src/app/interface/data/initializable';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
@@ -23,11 +23,11 @@ export class WeatherService implements Initializable {
 
   private currentWeatherIcon$: ReplaySubject<any> = new ReplaySubject();
   private currentWeather$!: BehaviorSubject<Weather>;
-  private currentHourlyWeather$: ReplaySubject<WeatherHourlyResponse[]> = new ReplaySubject();
+  private currentHourlyWeather$!: BehaviorSubject<WeatherHourlyResponse[]>;
   private currentSelectedDetailedView$: ReplaySubject<WeatherHourlyResponse> = new ReplaySubject();
   private preloadedIcons$: BehaviorSubject<Record<string, any>> = new BehaviorSubject({});
 
-  public async init(): Promise<boolean> {
+  public async init(): Promise<InitializableReturnValue> {
     const weather = await getFirstFrom(this.getCurrentWeatherDataByZip('28226'));
     const currentIcon = await this.getWeatherIcon(weather.weather[0].icon);
     this.setCurrentWeatherIcon(currentIcon);
@@ -40,12 +40,19 @@ export class WeatherService implements Initializable {
       const hourlyWeather = (await getFirstFrom(this.httpService.get<any>(hourlyWeatherUrl))).hourly;
       // const hourlyWeatherWithIcon = await this.getIconsForHourlyWeather(hourlyWeather);
       this.setCurrentWeather(weather);
-      this.setCurrentHourlyWeather(hourlyWeather);
+      this.currentHourlyWeather$ = new BehaviorSubject(hourlyWeather);
+      this.setCurrentSelectedDetailedView(hourlyWeather[0]);
       // this.createColorMap(weather); // TODO: Color map for hourly weather
       await this.setPreloadedIcons(hourlyWeather, weather);
-      return Promise.resolve(true);
+      return Promise.resolve({
+        serviceName: WeatherService.name,
+        status: true,
+      });
     }
-    return Promise.resolve(false);
+    return Promise.resolve({
+      serviceName: WeatherService.name,
+      status: false,
+    });
   }
 
   public getCurrentWeather(): Observable<Weather> {
@@ -60,7 +67,11 @@ export class WeatherService implements Initializable {
     return this.currentHourlyWeather$;
   }
 
-  public getCurrentSelectedDetailedViewObservable(): Observable<WeatherHourlyResponse | null> {
+  public getHourlyWeatherValue(): WeatherHourlyResponse[] {
+    return this.currentHourlyWeather$.getValue();
+  }
+
+  public getCurrentSelectedDetailedViewObservable(): Observable<WeatherHourlyResponse> {
     return this.currentSelectedDetailedView$;
   }
 
@@ -93,7 +104,7 @@ export class WeatherService implements Initializable {
   }
 
   public getWeatherIndication(weather: Weather) {
-    return <WeatherIndication>weather?.weather[0].main;
+    return weather?.weather[0].main;
   }
 
   public async getIconsForHourlyWeather(weather: WeatherHourlyResponse[]) {

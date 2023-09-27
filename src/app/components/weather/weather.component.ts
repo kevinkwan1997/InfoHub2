@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { BaseWidget } from '../base-widget';
 import { WeatherService } from 'src/app/services/data/weather/weather.service';
-import { Observable } from 'rxjs';
 import { Weather } from 'src/app/interface/data/weather';
 import { TextService } from 'src/app/services/text/text.service';
-import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 import { WeatherIndication } from 'src/app/enum/weather';
+import { AssetService } from 'src/app/services/data/asset/asset.service';
 
 @Component({
   selector: 'weather',
@@ -15,6 +14,7 @@ import { WeatherIndication } from 'src/app/enum/weather';
 })
 export class WeatherComponent implements OnInit, BaseWidget {
     constructor(
+      private assetService: AssetService,
       private textService: TextService,
       private weatherService: WeatherService
     ) {}
@@ -22,12 +22,13 @@ export class WeatherComponent implements OnInit, BaseWidget {
     public currentWeather = signal<Weather | null>(null);
     public hourlyWeather!: any; // TODO: Update
     public currentIcon: any;
-    public currentBg!: string;
+    public currentBackground!: string;
 
     public async ngOnInit(){
       const currentWeather = this.weatherService.getCurrentWeatherValue();
       this.currentIcon = this.weatherService.getPreloadedIcon(<WeatherIndication>currentWeather.weather[0].main);
       this.currentWeather.set(currentWeather);
+      this.currentBackground = this.assetService.getImageUrl(currentWeather.weather[0].main);
     }
 
     public formatTemperature(temperature: number | undefined): number {

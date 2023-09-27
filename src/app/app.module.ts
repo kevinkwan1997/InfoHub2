@@ -16,6 +16,7 @@ import { QuickAccessButtonsComponent } from './components/main-page/quick-access
 import { ModalModule } from './components/modal/modal.module';
 import { ApplicationService } from './services/application/application.service';
 import { ModalService } from './services/application/modal.service';
+import { LogService } from './services/log.service';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ModalService } from './services/application/modal.service';
   providers: [
     ApplicationService,
     ModalService,
+    LogService,
   ],
   bootstrap: [AppComponent]
 })

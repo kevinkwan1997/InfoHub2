@@ -7,15 +7,40 @@
 
 .full-weather-detailed-view {
     height: 100%;
-    box-shadow: $box-shadow-light;
     display: flex;
+    flex-direction: column;
 
     &__banner {
-        max-height: 40%;
+        height: 40%;
         width: 100%;
-        box-shadow: $box-shadow-light;
         background-size: cover;
         background-repeat: no-repeat;
         background-blend-mode: multiply;
+        background-color: rgba(97, 91, 91, 0.8);
+        margin-bottom: 2rem;
+        display: flex;
+        padding: 4rem 8rem;
+        align-items: center;
+        justify-content: space-between;
+
+        &--text {
+            font-size: 8rem;
+            letter-spacing: 0.2rem;
+            color: $color-white;
+            font-weight: 200;
+        }
+
+        &--temp {
+            font-size: 8rem;
+            letter-spacing: 0.2rem;
+            color: $color-white;
+            font-weight: 200;
+        }
+    }
+
+    &__content {
+        height: 100%;
+        width: 100%;
+        background-color: rgba($color-white, 0.75);
     }
 }

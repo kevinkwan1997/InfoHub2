@@ -1,12 +1,16 @@
-<div class="full-weather">
+<div
+    class="full-weather" 
+    >
     <full-weather-hourly 
         *ngIf="hourlyWeather$ | async as hourlyWeather"
-        [hourlyWeather]="hourlyWeather">
+        [hourlyWeather]="hourlyWeather"
+        (clickEvent)="setSelected($event)"
+        >
     </full-weather-hourly>
     <full-weather-detailed-view 
         *ngIf="selectedDetailedHourly$ | async as selectedDetailedHourly"
         [hourlyWeather]="selectedDetailedHourly"
         >
     </full-weather-detailed-view>
-    <div *ngIf="currentWeather$ | async"></div>
 </div>
+<div *ngIf="currentWeather$ | async"></div>

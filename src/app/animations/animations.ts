@@ -86,6 +86,13 @@ export const zoomAbs = trigger('zoomAbs', [
   transition('true <=> false', animate('500ms ease-in')),
 ])
 
+export const swapRight = trigger('swapRight', [
+  transition('*=>*', [
+    style({opacity: 0}),
+    animate(600)
+  ])
+])
+
 // ngIf animations
 
 export const ngIfFadeIn = trigger('ngIfFadeIn', [
@@ -167,14 +174,14 @@ export const ngIfSlideInTop = trigger('ngIfSlideInTop', [
 // Router animation
 export const routeFadeIn = trigger('routeFadeIn', [
   transition('* => *', [
-    query(':enter', [style({ opacity: 0 })], {
+    query(':enter', [style({ opacity: 0, position: 'absolute' })], {
       optional: true,
     }),
     query(
       ':leave',
       [
-        style({ opacity: 1 }),
-        animate('5s 0.1s', style({ opacity: 0 })),
+        style({ opacity: 1, position: 'absolute' }),
+        animate('0.4s', style({ opacity: 0 })),
       ],
       { optional: true }
     ),
@@ -182,7 +189,7 @@ export const routeFadeIn = trigger('routeFadeIn', [
       ':enter',
       [
         style({ opacity: 0 }),
-        animate('0.1s', style({ opacity: 1 })),
+        animate('0.4s', style({ opacity: 1, position: 'absolute' })),
       ],
       { optional: true }
     ),

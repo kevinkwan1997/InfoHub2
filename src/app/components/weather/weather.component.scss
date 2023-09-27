@@ -14,10 +14,10 @@
     justify-content: space-between;
     padding: $box-padding-small;
     text-shadow: $text-shadow;
-    // background-image: linear-gradient(to left, rgba(97, 91, 91, 0.75) 80%, rgba(255, 255, 255, 1)), url('../../../assets/cloudfoot.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-blend-mode: multiply;
+    background-color: rgba(26, 24, 24, 0.82);
     color: $color-white;
 
     &__left {

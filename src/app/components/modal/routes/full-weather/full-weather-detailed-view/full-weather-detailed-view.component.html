@@ -1,5 +1,7 @@
 <div class="full-weather-detailed-view">
-    <div class="full-weather-detailed-view__banner">
+    <div class="full-weather-detailed-view__banner" [ngStyle]="{'background-image': currentBackground }">
+        <h1 class="full-weather-detailed-view__banner--temp" [@swapRight]="weather">{{ weather.feels_like | fahrenheit }}</h1>
+        <h1 class="full-weather-detailed-view__banner--text"[@swapRight]="weather">{{ weather.weather[0].main }}</h1>
     </div>
     <div class="full-weather-detailed-view__content">
         

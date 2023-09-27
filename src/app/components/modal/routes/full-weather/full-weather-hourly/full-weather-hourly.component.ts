@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input } from '@angular/core';
-import { WeatherIndication } from 'src/app/enum/weather';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { WeatherHourlyResponse } from 'src/app/interface/data/weather';
 import { WeatherService } from 'src/app/services/data/weather/weather.service';
 
@@ -13,6 +12,7 @@ export class FullWeatherHourlyComponent {
   constructor(private weatherService: WeatherService) {}
 
   @Input() public hourlyWeather: WeatherHourlyResponse[] = [];
+  @Output() public clickEvent: EventEmitter<WeatherHourlyResponse> = new EventEmitter();
 
   public ngOnInit(): void {
   }
@@ -20,11 +20,11 @@ export class FullWeatherHourlyComponent {
   public getColorMapping() {
   }
 
-  public async onClick(hourlyWeather: WeatherHourlyResponse) {
-    this.weatherService.setCurrentSelectedDetailedView(hourlyWeather);
+  public onClick(hourlyWeather: WeatherHourlyResponse) {
+    this.clickEvent.emit(hourlyWeather);
   }
 
   public getIcon(weather: WeatherHourlyResponse) {
-    return this.weatherService.getPreloadedIcon(<WeatherIndication>weather.weather[0].main)
+    return this.weatherService.getPreloadedIcon(weather.weather[0].main)
   }
 }
