@@ -33,6 +33,7 @@ import { modalRoutes } from './routes/modal.routes';
     ModalComponent,
   ],
   providers: [
+    Location,
     ModalService,
   ]
 })

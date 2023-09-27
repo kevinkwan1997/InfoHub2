@@ -4,9 +4,9 @@ import { TextService } from '../../text/text.service';
 import { HttpService } from '../../http.service';
 import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 
-import { Weather, WeatherHourlyResponse, WeatherIcon, WeatherIconResponse } from 'src/app/interface/data/weather';
+import { Weather, WeatherHourlyResponse, WeatherIconResponse } from 'src/app/interface/data/weather';
 import { Initializable } from 'src/app/interface/data/initializable';
-import { BehaviorSubject, Observable, ReplaySubject, firstValueFrom, take } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,7 @@ export class WeatherService implements Initializable {
 
   private latitude!: number;
   private longitude!: number;
+  // private sunriseAndsunsetCalculation!: { sunrise: string, sunset: string };
 
   private currentWeatherIcon$: ReplaySubject<any> = new ReplaySubject();
   private currentWeather$!: BehaviorSubject<Weather>;
@@ -40,6 +41,7 @@ export class WeatherService implements Initializable {
       // const hourlyWeatherWithIcon = await this.getIconsForHourlyWeather(hourlyWeather);
       this.setCurrentWeather(weather);
       this.setCurrentHourlyWeather(hourlyWeather);
+      // this.createColorMap(weather); // TODO: Color map for hourly weather
       await this.setPreloadedIcons(hourlyWeather, weather);
       return Promise.resolve(true);
     }
@@ -168,6 +170,7 @@ export class WeatherService implements Initializable {
     return image;
   }
 
+
   public getPreloadedIcon(indication: WeatherIndication): any {
     const icons = this.preloadedIcons$.getValue();
     return icons[indication];
@@ -187,4 +190,25 @@ export class WeatherService implements Initializable {
     }
     this.preloadedIcons$.next(existing);
   }
+  // private createColorMap(weather: Weather) {
+  //   const colorMapping: { name: string, value: string }[] = [
+  //     { name: 'hourly-gradient-morning', value: '#166B96' },
+  //     { name: 'hourly-gradient-morning-afternoon', value: '#388bb4' },
+  //     { name: 'hourly-gradient-afternoon', value: '#84D6FF' },
+  //     { name: 'hourly-gradient-afternoon-evening', value: '#5e91aa' },
+  //     { name: 'hourly-gradient-evening', value: '#CB6D00' },
+  //     { name: 'hourly-gradient-evening-midnight', value: '#965000' },
+  //     { name: 'hourly-gradient-midnight', value: '#1A1914' },
+  //     { name: 'hourly-gradient-midnight-morning', value: '#242c41' },
+  //   ]
+  //   const sunrise =new Date(weather.sys.sunrise * 1000).getHours();
+  //   const sunset = new Date(weather.sys.sunset * 1000).getHours();
+
+  //   let colorMap: Record<string, string> = {};
+  //   const sunlightPercentageToDay = Math.round(((sunset - sunrise) / 24) * 100) / 100;
+  //   console.log(sunlightPercentageToDay);
+  //   for (const map of colorMapping) {
+
+  //   }
+  // }
 }

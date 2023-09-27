@@ -1,4 +1,4 @@
-import { animation, trigger, state, style, transition, animate, useAnimation } from '@angular/animations';
+import { animation, trigger, state, group, style, transition, animate, useAnimation, query } from '@angular/animations';
 
 export const fadeInAnimation = animation([
   style({
@@ -162,4 +162,29 @@ export const ngIfSlideInTop = trigger('ngIfSlideInTop', [
               style({ transform: 'translateY(-200%)' }))
     ]
   )
+])
+
+// Router animation
+export const routeFadeIn = trigger('routeFadeIn', [
+  transition('* => *', [
+    query(':enter', [style({ opacity: 0 })], {
+      optional: true,
+    }),
+    query(
+      ':leave',
+      [
+        style({ opacity: 1 }),
+        animate('5s 0.1s', style({ opacity: 0 })),
+      ],
+      { optional: true }
+    ),
+    query(
+      ':enter',
+      [
+        style({ opacity: 0 }),
+        animate('0.1s', style({ opacity: 1 })),
+      ],
+      { optional: true }
+    ),
+  ])
 ])

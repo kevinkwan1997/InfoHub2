@@ -14,7 +14,6 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { QuickAccessComponent } from './components/main-page/quick-access/quick-access.component';
 import { QuickAccessButtonsComponent } from './components/main-page/quick-access/quick-access-buttons/quick-access-buttons.component';
 import { ModalModule } from './components/modal/modal.module';
-import { SharedModule } from './shared/shared.module';
 import { ApplicationService } from './services/application/application.service';
 import { ModalService } from './services/application/modal.service';
 
