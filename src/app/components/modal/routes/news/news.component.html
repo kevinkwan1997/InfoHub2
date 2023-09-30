@@ -1,2 +1,7 @@
-<p>news works!</p>
-<p>{{ test$ | async }}</p>
+<div class="news">
+    <div class="news__banner">
+        <ng-container *ngFor="let article of (bannerArticles$ | async); let i = index">
+            
+        </ng-container>
+    </div>
+</div>
