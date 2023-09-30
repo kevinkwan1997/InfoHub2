@@ -5,6 +5,8 @@ import { RoundToWholePipe } from './pipes/round-to-whole.pipe';
 import { TimePipe } from './pipes/time.pipe';
 import { DatePipe } from './pipes/date.pipe';
 import { FahrenheitPipe } from './pipes/fahrenheit.pipe';
+import { DegreesPipe } from './pipes/degrees.pipe';
+import { PercentPipe } from './pipes/percent.pipe';
 
 @NgModule({
   declarations: [
@@ -12,7 +14,9 @@ import { FahrenheitPipe } from './pipes/fahrenheit.pipe';
     MilesPerHourPipe,
     RoundToWholePipe,
     TimePipe,
-    FahrenheitPipe, 
+    FahrenheitPipe,
+    DegreesPipe,
+    PercentPipe, 
   ],
   imports: [
     CommonModule,
@@ -22,7 +26,9 @@ import { FahrenheitPipe } from './pipes/fahrenheit.pipe';
     MilesPerHourPipe,
     RoundToWholePipe,
     TimePipe,
-    FahrenheitPipe
+    FahrenheitPipe,
+    DegreesPipe,
+    PercentPipe,
   ]
 })
 export class SharedModule { }

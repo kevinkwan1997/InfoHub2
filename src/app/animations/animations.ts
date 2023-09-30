@@ -1,4 +1,4 @@
-import { animation, trigger, state, group, style, transition, animate, useAnimation, query } from '@angular/animations';
+import { animation, trigger, state, group, style, transition, animate, useAnimation, query, animateChild } from '@angular/animations';
 
 export const fadeInAnimation = animation([
   style({
@@ -87,10 +87,11 @@ export const zoomAbs = trigger('zoomAbs', [
 ])
 
 export const swapRight = trigger('swapRight', [
-  transition('*=>*', [
+  transition('* => *', [
     style({opacity: 0}),
     animate(600)
-  ])
+  ]),
+  transition('* <= *', [])
 ])
 
 // ngIf animations
@@ -113,6 +114,26 @@ export const ngIfFadeIn = trigger('ngIfFadeIn', [
     ]
   )
 ])
+
+export const ngIfFadeOut = trigger('ngIfFadeOut', [
+  transition(
+    ':enter', 
+    [
+      style({ opacity: 1 }),
+      animate('0.82s ease-in', 
+              style({ opacity: 0 }))
+    ]
+  ),
+  transition(
+    ':leave', 
+    [
+      style({ opacity: 0 }),
+      animate('0.82s ease-out', 
+              style({ opacity: 1 }))
+    ]
+  )
+])
+
 
 export const ngIfSlideInBottom = trigger('ngIfSlideInBottom', [
   transition(
@@ -173,7 +194,7 @@ export const ngIfSlideInTop = trigger('ngIfSlideInTop', [
 
 // Router animation
 export const routeFadeIn = trigger('routeFadeIn', [
-  transition('* => *', [
+  transition('* <=> *', [
     query(':enter', [style({ opacity: 0, position: 'absolute' })], {
       optional: true,
     }),
@@ -193,5 +214,32 @@ export const routeFadeIn = trigger('routeFadeIn', [
       ],
       { optional: true }
     ),
+  ])
+])
+
+export const routeSlideInLeft = trigger('routeSlideInLeft', [
+  transition('* <=> *', [
+    style({ position: 'relative' }),
+    query(':enter, :leave', [
+      style({
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%'
+      })
+    ], { optional: true }),
+    query(':enter', [
+      style({ left: '-100%' })
+    ], { optional: true }),
+    query(':leave', animateChild(), { optional: true }),
+    group([
+      query(':leave', [
+        animate('200ms ease-out', style({ left: '100%', opacity: 0 }))
+      ], { optional: true }),
+      query(':enter', [
+        animate('300ms ease-out', style({ left: '0%' }))
+      ], { optional: true }),
+      query('@*', animateChild(), { optional: true })
+    ]),
   ])
 ])

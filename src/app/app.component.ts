@@ -2,11 +2,15 @@ import { Component, HostListener, Injector } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApplicationService } from './services/application/application.service';
 import { ModalService } from './services/application/modal.service';
+import { ngIfFadeOut } from './animations/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  animations: [
+    ngIfFadeOut
+  ]
 })
 export class AppComponent {
   constructor(

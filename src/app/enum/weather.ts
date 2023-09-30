@@ -1,6 +1,7 @@
 export enum WeatherUrlInfo {
     API_KEY = 'b22fdf832ac62d03d6cece72af4faa5f',
-    URL_BASE = 'https://api.openweathermap.org/data/2.5/',
+    URL_BASE_OLD = 'https://api.openweathermap.org/data/2.5/',
+    URL_BASE = 'https://api.openweathermap.org/data/3.0/onecall?',
     IMG_URL_BASE = 'http://openweathermap.org/img/wn/'
 }
 

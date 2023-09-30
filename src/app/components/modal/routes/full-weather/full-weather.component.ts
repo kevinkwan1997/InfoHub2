@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
-import { BehaviorSubject, Observable, distinctUntilChanged, tap } from 'rxjs';
-import { ActiveModalParams, ModalComponent } from 'src/app/interface/components/modal.interface';
+import { Observable } from 'rxjs';
+import { ModalComponent } from 'src/app/interface/components/modal.interface';
 import { Weather, WeatherHourlyResponse } from 'src/app/interface/data/weather';
 import { AssetService } from 'src/app/services/data/asset/asset.service';
 import { WeatherService } from 'src/app/services/data/weather/weather.service';

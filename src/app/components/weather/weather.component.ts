@@ -28,7 +28,7 @@ export class WeatherComponent implements OnInit, BaseWidget {
       const currentWeather = this.weatherService.getCurrentWeatherValue();
       this.currentIcon = this.weatherService.getPreloadedIcon(<WeatherIndication>currentWeather.weather[0].main);
       this.currentWeather.set(currentWeather);
-      this.currentBackground = this.assetService.getImageUrl(currentWeather.weather[0].main);
+      this.currentBackground = this.assetService.getNgStyleImageUrl(currentWeather.weather[0].main);
     }
 
     public formatTemperature(temperature: number | undefined): number {

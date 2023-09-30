@@ -14,17 +14,22 @@ export class AssetService implements Initializable {
     private logService: LogService,
   ) { }
 
-  private loadedImages!: Record<WeatherIndication, string>;
+  private loadedNgStyleImages!: Record<WeatherIndication, string>;
+  private loadedImageUrls!: Record<WeatherIndication, SafeUrl>;
 
   public async init(): Promise<InitializableReturnValue> {
-    this.loadedImages = <Record<WeatherIndication, string>>{};
+    this.loadedNgStyleImages = <Record<WeatherIndication, string>>{};
+    this.loadedImageUrls = <Record<WeatherIndication, SafeUrl>>{};
     const baseAssetPath = '/assets/'
     for (let key of Object.keys(WeatherIndication)) {
       let url;
       try {
         url = await this.requestImage(baseAssetPath + key + '.jpg');
         const image = this.httpService.getImageFromBlob(url);
-        this.loadedImages[<WeatherIndication>key] = this.getNgStyleUrl(image);
+        const ngStyleUrl = this.getNgStyleUrl(image);
+        this.loadedNgStyleImages[<WeatherIndication>key] = ngStyleUrl
+        this.loadedImageUrls[<WeatherIndication>key] = image;
+        this.logService.info(AssetService.name, 'Success! Loaded image: ', ngStyleUrl);
       } catch (error) {
         this.logService.error(AssetService.name, 'Failed to load asset. Response: ', error);
       }
@@ -47,9 +52,14 @@ export class AssetService implements Initializable {
     })
   }
 
-  public getImageUrl(indication: WeatherIndication): string {
+  public getNgStyleImageUrl(indication: WeatherIndication): string {
     const upperCase = <WeatherIndication>indication.toUpperCase();
-    return this.loadedImages[upperCase];
+    return this.loadedNgStyleImages[upperCase];
+  }
+
+  public getImageUrl(indication: WeatherIndication): SafeUrl {
+    const upperCase = <WeatherIndication>indication.toUpperCase()
+    return this.loadedImageUrls[upperCase];
   }
 
   public getNgStyleUrl(url: any) {

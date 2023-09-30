@@ -1,8 +1,8 @@
-<div class="app" *ngIf="isApplicationLoaded$ | async as isApplicationLoaded">
+<div class="app" *ngIf="isApplicationLoaded$ | async">
     <main-header></main-header>
     <main-page></main-page>
     <modal></modal>
 </div>
-<!-- <div class="loader" [@fade]="fadeState">
-    <h1 class="loader__text">Loading....</h1>
-</div> -->
+<div class="app__loader" *ngIf="!(isApplicationLoaded$ | async)" @ngIfFadeOut>
+    <p class="app__loader--loading">Initializing Application Data....</p>
+</div>

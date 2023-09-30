@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ngIfFadeIn, swapRight } from 'src/app/animations/animations';
+import { SafeUrl } from '@angular/platform-browser';
+import { routeSlideInLeft, swapRight } from 'src/app/animations/animations';
 import { WeatherHourlyResponse } from 'src/app/interface/data/weather';
 import { AssetService } from 'src/app/services/data/asset/asset.service';
+import { WeatherService } from 'src/app/services/data/weather/weather.service';
 
 @Component({
   selector: 'full-weather-detailed-view',
@@ -9,13 +11,13 @@ import { AssetService } from 'src/app/services/data/asset/asset.service';
   styleUrls: ['./full-weather-detailed-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
-    swapRight,
-    ngIfFadeIn
+    routeSlideInLeft
   ]
 })
 export class FullWeatherDetailedViewComponent {
   constructor(
     private assetService: AssetService,
+    private weatherService: WeatherService,
   ) {
     
   }
@@ -25,7 +27,12 @@ export class FullWeatherDetailedViewComponent {
   };
 
   public weather!: WeatherHourlyResponse;
+  public active: boolean = true;
 
-  public currentBackground!: string;
+  public currentBackground!: SafeUrl;
+
+  public getIcon(weather: WeatherHourlyResponse) {
+    return this.weatherService.getPreloadedIcon(weather.weather[0].main)
+  }
 
 }

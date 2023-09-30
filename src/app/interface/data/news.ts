@@ -1,15 +1,19 @@
-export interface NewsObject {
-    source: SourceObject,
-    author: string,
-    title: string,
-    description: string,
-    url: string,
-    urlToImage: string,
-    publishedAt: string,
-    content: string
+export interface HeadlineResponse {
+    status: string;
+    totalResults: number;
+    articles: Article[]
 }
 
-export interface SourceObject {
-    id: string,
-    name: string,
+export interface Article {
+    source: {
+        id: string;
+        name: string;
+    };
+    author: string;
+    title: string;
+    description: string;
+    url: string;
+    urlToImage: string;
+    publishedAt: string;
+    content: string;
 }

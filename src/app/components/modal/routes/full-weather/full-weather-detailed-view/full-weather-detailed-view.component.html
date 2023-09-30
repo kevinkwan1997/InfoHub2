@@ -1,9 +1,31 @@
 <div class="full-weather-detailed-view">
-    <div class="full-weather-detailed-view__banner" [ngStyle]="{'background-image': currentBackground }">
-        <h1 class="full-weather-detailed-view__banner--temp" [@swapRight]="weather">{{ weather.feels_like | fahrenheit }}</h1>
-        <h1 class="full-weather-detailed-view__banner--text"[@swapRight]="weather">{{ weather.weather[0].main }}</h1>
+    <div class="full-weather-detailed-view__banner">
+        <img class="full-weather-detailed-view__background" [src]="currentBackground" [@routeSlideInLeft]="weather"/>
+        <h1 class="full-weather-detailed-view__banner--temp" [@routeSlideInLeft]="weather">{{ weather.feels_like | fahrenheit }}</h1>
+        <h1 class="full-weather-detailed-view__banner--text"[@routeSlideInLeft]="weather">{{ weather.weather[0].main }}</h1>
     </div>
     <div class="full-weather-detailed-view__content">
-        
+        <h1 class="full-weather-detailed-view__indication">{{ weather.weather[0].description }}</h1>
+        <div class="full-weather-detailed-view__left">
+            <div class="full-weather-detailed-view__weather">
+                <img [src]="getIcon(weather)" alt="" class="full-weather-detailed-view__icon">
+                <p class="full-weather-detailed-view__weather--feels-like flex-apart"><span>Feels like: </span><span>{{ weather.feels_like | fahrenheit }}</span></p>
+                <p class="full-weather-detailed-view__weather--humidity flex-apart"><span>Humidity: </span><span>{{ weather.humidity | percent }}</span></p>
+                <p class="full-weather-detailed-view__weather--wind-deg flex-apart"><span>Wind Degrees: </span><span>{{ weather.wind_deg | degrees }}</span></p>
+                <p class="full-weather-detailed-view__weather--wind-gust flex-apart"><span>Wind Gust: </span><span>{{ weather.wind_gust | milesPerHour }}</span></p>
+                <p class="full-weather-detailed-view__weather--wind-speed flex-apart"><span>Wind Speed: </span><span>{{ weather.wind_speed | milesPerHour }}</span></p>
+            </div>
+        </div>
+        <div class="full-weather-detailed-view__right">
+            <div class="full-weather-detailed-view__details">
+                <p class="full-weather-detailed-view__details--dt"></p>
+                <p class="full-weather-detailed-view__details--temperature"></p>
+                <p class="full-weather-detailed-view__details--pressure"></p>
+                <p class="full-weather-detailed-view__details--dewpoint"></p>
+                <p class="full-weather-detailed-view__details--uvi"></p>
+                <p class="full-weather-detailed-view__details--clouds"></p>
+                <p class="full-weather-detailed-view__details--visibility"></p>
+            </div>
+        </div>
     </div>
 </div>

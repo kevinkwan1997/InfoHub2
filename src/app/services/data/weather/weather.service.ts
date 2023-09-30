@@ -7,12 +7,14 @@ import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 import { Weather, WeatherHourlyResponse, WeatherIconResponse } from 'src/app/interface/data/weather';
 import { Initializable, InitializableReturnValue } from 'src/app/interface/data/initializable';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { LogService } from '../../log.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WeatherService implements Initializable {
   constructor(
+    private logService: LogService,
     private httpService: HttpService,
     private textService: TextService,
   ) {}
@@ -28,30 +30,45 @@ export class WeatherService implements Initializable {
   private preloadedIcons$: BehaviorSubject<Record<string, any>> = new BehaviorSubject({});
 
   public async init(): Promise<InitializableReturnValue> {
-    const weather = await getFirstFrom(this.getCurrentWeatherDataByZip('28226'));
-    const currentIcon = await this.getWeatherIcon(weather.weather[0].icon);
-    this.setCurrentWeatherIcon(currentIcon);
-    this.currentWeather$ = new BehaviorSubject(weather);
+    let weather;
+    let status = false;
+    try {
+      weather = await getFirstFrom(this.getCurrentWeatherDataByZip('28226'));
+      this.currentWeather$ = new BehaviorSubject(weather);
+      if (weather?.coord) {
+        this.latitude = weather.coord.lat;
+        this.longitude = weather.coord.lon;
+      }
+    } catch(error) {
+      this.logService.error(WeatherService.name, 'Failed to fetch currently weather', error);
+      throw error;
+    }
 
-    if (weather?.coord) {
-      this.latitude = weather.coord.lat;
-      this.longitude = weather.coord.lon;
-      const hourlyWeatherUrl = (await getFirstFrom(this.getHourlyDataByZip())).url;
-      const hourlyWeather = (await getFirstFrom(this.httpService.get<any>(hourlyWeatherUrl))).hourly;
-      // const hourlyWeatherWithIcon = await this.getIconsForHourlyWeather(hourlyWeather);
-      this.setCurrentWeather(weather);
-      this.currentHourlyWeather$ = new BehaviorSubject(hourlyWeather);
-      this.setCurrentSelectedDetailedView(hourlyWeather[0]);
-      // this.createColorMap(weather); // TODO: Color map for hourly weather
-      await this.setPreloadedIcons(hourlyWeather, weather);
-      return Promise.resolve({
-        serviceName: WeatherService.name,
-        status: true,
-      });
+    if (weather) {
+      try {
+        const currentIcon = await this.getWeatherIcon(weather.weather[0].icon);
+        this.setCurrentWeatherIcon(currentIcon);
+      } catch(error) {
+        this.logService.error(WeatherService.name, 'Failed to fetch icon', error);
+        throw error;
+      }
+  
+      try {
+        const hourlyWeatherUrl = (await getFirstFrom(this.getHourlyDataByZip())).url;
+        const hourlyWeather = (await getFirstFrom(this.httpService.get<any>(hourlyWeatherUrl))).hourly;
+        console.log(hourlyWeather);
+        this.currentHourlyWeather$ = new BehaviorSubject(hourlyWeather);
+        this.setCurrentSelectedDetailedView(hourlyWeather[0]);
+        await this.setPreloadedIcons(hourlyWeather, weather);
+        status = false;
+      } catch(error) {
+        this.logService.error(WeatherService.name, 'Failed to fetch icon', error);
+        throw error;
+      }
     }
     return Promise.resolve({
       serviceName: WeatherService.name,
-      status: false,
+      status: true,
     });
   }
 
@@ -118,7 +135,7 @@ export class WeatherService implements Initializable {
   }
 
   public getCurrentWeatherDataByZip(zipCode: string): Observable<Weather> {
-    const requestUrl = WeatherUrlInfo.URL_BASE
+    const requestUrl = WeatherUrlInfo.URL_BASE_OLD
       + WeatherDataTypes.CURRENT_WEATHER
       + this.textService.replace(WeatherQueryParams.ZIP_US, zipCode)
       + WeatherQueryParams.IMPERIAL_UNIT
@@ -131,10 +148,8 @@ export class WeatherService implements Initializable {
 
   public getHourlyDataByZip(): Observable<any> {
     const requestUrl = WeatherUrlInfo.URL_BASE
-      + WeatherDataTypes.FORECAST_HOURLY
       + this.textService.replace(WeatherQueryParams.LAT, this.latitude.toString())
       + this.textService.replace(WeatherQueryParams.LON, this.longitude.toString())
-      + WeatherQueryParams.EXCLUDE_CURRENT
       + WeatherQueryParams.IMPERIAL_UNIT
       + WeatherQueryParams.APP_ID
       + WeatherUrlInfo.API_KEY
