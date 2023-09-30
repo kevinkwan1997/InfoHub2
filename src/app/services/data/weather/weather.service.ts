@@ -4,7 +4,7 @@ import { TextService } from '../../text/text.service';
 import { HttpService } from '../../http.service';
 import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 
-import { Weather, WeatherHourlyResponse, WeatherIconResponse } from 'src/app/interface/data/weather';
+import { BaseWeatherData, Hourly, Weather, WeatherIconResponse } from 'src/app/interface/data/weather';
 import { Initializable, InitializableReturnValue } from 'src/app/interface/data/initializable';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { LogService } from '../../log.service';
@@ -24,9 +24,9 @@ export class WeatherService implements Initializable {
   // private sunriseAndsunsetCalculation!: { sunrise: string, sunset: string };
 
   private currentWeatherIcon$: ReplaySubject<any> = new ReplaySubject();
-  private currentWeather$!: BehaviorSubject<Weather>;
-  private currentHourlyWeather$!: BehaviorSubject<WeatherHourlyResponse[]>;
-  private currentSelectedDetailedView$: ReplaySubject<WeatherHourlyResponse> = new ReplaySubject();
+  private currentWeather$!: BehaviorSubject<BaseWeatherData>;
+  private currentHourlyWeather$!: BehaviorSubject<Hourly[]>;
+  private currentSelectedDetailedView$: ReplaySubject<Hourly> = new ReplaySubject();
   private preloadedIcons$: BehaviorSubject<Record<string, any>> = new BehaviorSubject({});
 
   public async init(): Promise<InitializableReturnValue> {
@@ -54,12 +54,12 @@ export class WeatherService implements Initializable {
       }
   
       try {
-        const hourlyWeatherUrl = (await getFirstFrom(this.getHourlyDataByZip())).url;
-        const hourlyWeather = (await getFirstFrom(this.httpService.get<any>(hourlyWeatherUrl))).hourly;
-        console.log(hourlyWeather);
-        this.currentHourlyWeather$ = new BehaviorSubject(hourlyWeather);
-        this.setCurrentSelectedDetailedView(hourlyWeather[0]);
-        await this.setPreloadedIcons(hourlyWeather, weather);
+        const fullWeatherUrl = (await getFirstFrom(this.getFullWeatherData())).url;
+        const fullWeather = (await getFirstFrom(this.httpService.get<any>(fullWeatherUrl)));
+        console.log(fullWeather);
+        this.currentHourlyWeather$ = new BehaviorSubject(fullWeather.hourly);
+        this.setCurrentSelectedDetailedView(fullWeather.hourly[0]);
+        await this.setPreloadedIcons(fullWeather.hourly, weather);
         status = false;
       } catch(error) {
         this.logService.error(WeatherService.name, 'Failed to fetch icon', error);
@@ -72,23 +72,23 @@ export class WeatherService implements Initializable {
     });
   }
 
-  public getCurrentWeather(): Observable<Weather> {
+  public getCurrentWeather(): Observable<BaseWeatherData> {
     return this.currentWeather$;
   }
 
-  public getCurrentWeatherValue(): Weather {
+  public getCurrentWeatherValue(): BaseWeatherData {
     return this.currentWeather$.getValue();
   }
 
-  public getHourlyWeather(): Observable<WeatherHourlyResponse[]> {
+  public getHourlyWeather(): Observable<Hourly[]> {
     return this.currentHourlyWeather$;
   }
 
-  public getHourlyWeatherValue(): WeatherHourlyResponse[] {
+  public getHourlyWeatherValue(): Hourly[] {
     return this.currentHourlyWeather$.getValue();
   }
 
-  public getCurrentSelectedDetailedViewObservable(): Observable<WeatherHourlyResponse> {
+  public getCurrentSelectedDetailedViewObservable(): Observable<Hourly> {
     return this.currentSelectedDetailedView$;
   }
 
@@ -108,7 +108,7 @@ export class WeatherService implements Initializable {
     this.currentWeatherIcon$.next(icon);
   }
 
-  public setCurrentWeather(weather: Weather): void {
+  public setCurrentWeather(weather: BaseWeatherData): void {
     this.currentWeather$.next(weather);
   }
 
@@ -116,15 +116,15 @@ export class WeatherService implements Initializable {
     this.currentHourlyWeather$.next(weather);
   }
 
-  public setCurrentSelectedDetailedView(selected: WeatherHourlyResponse): void {
+  public setCurrentSelectedDetailedView(selected: Hourly): void {
     this.currentSelectedDetailedView$.next(selected);
   }
 
-  public getWeatherIndication(weather: Weather) {
+  public getWeatherIndication(weather: BaseWeatherData) {
     return weather?.weather[0].main;
   }
 
-  public async getIconsForHourlyWeather(weather: WeatherHourlyResponse[]) {
+  public async getIconsForHourlyWeather(weather: Hourly[]) {
     return weather.map(async (hour) => {
       const icon: Blob = await this.getWeatherIcon(<WeatherIndication>hour.weather[0].main);
       return {
@@ -134,7 +134,7 @@ export class WeatherService implements Initializable {
     })
   }
 
-  public getCurrentWeatherDataByZip(zipCode: string): Observable<Weather> {
+  public getCurrentWeatherDataByZip(zipCode: string): Observable<BaseWeatherData> {
     const requestUrl = WeatherUrlInfo.URL_BASE_OLD
       + WeatherDataTypes.CURRENT_WEATHER
       + this.textService.replace(WeatherQueryParams.ZIP_US, zipCode)
@@ -142,11 +142,11 @@ export class WeatherService implements Initializable {
       + WeatherQueryParams.APP_ID
       + WeatherUrlInfo.API_KEY
     
-    const httpRequest = this.httpService.get<Weather>(requestUrl);
+    const httpRequest = this.httpService.get<BaseWeatherData>(requestUrl);
     return httpRequest;
   }
 
-  public getHourlyDataByZip(): Observable<any> {
+  public getFullWeatherData(): Observable<any> {
     const requestUrl = WeatherUrlInfo.URL_BASE
       + this.textService.replace(WeatherQueryParams.LAT, this.latitude.toString())
       + this.textService.replace(WeatherQueryParams.LON, this.longitude.toString())
@@ -202,7 +202,7 @@ export class WeatherService implements Initializable {
     return icons[indication];
   }
 
-  private async setPreloadedIcons(hourlyWeather: WeatherHourlyResponse[], currentWeather: Weather): Promise<void> {
+  private async setPreloadedIcons(hourlyWeather: Hourly[], currentWeather: BaseWeatherData): Promise<void> {
     let existing: Record<string, any> = {};
     for (const weather of hourlyWeather) {
       const indication: string = weather.weather[0].main;

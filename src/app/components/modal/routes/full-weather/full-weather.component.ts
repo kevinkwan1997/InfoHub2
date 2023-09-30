@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { ModalComponent } from 'src/app/interface/components/modal.interface';
-import { Weather, WeatherHourlyResponse } from 'src/app/interface/data/weather';
+import { BaseWeatherData, Hourly } from 'src/app/interface/data/weather';
 import { AssetService } from 'src/app/services/data/asset/asset.service';
 import { WeatherService } from 'src/app/services/data/weather/weather.service';
 
@@ -19,9 +19,9 @@ export class FullWeatherComponent implements ModalComponent, OnInit {
   ) { }
   @Input() public title!: string;
 
-  public currentWeather$!: Observable<Weather>;
-  public hourlyWeather$!: Observable<WeatherHourlyResponse[]>;
-  public selectedDetailedHourly$!: Observable<WeatherHourlyResponse | null>;
+  public currentWeather$!: Observable<BaseWeatherData>;
+  public hourlyWeather$!: Observable<Hourly[]>;
+  public selectedDetailedHourly$!: Observable<Hourly | null>;
 
   public currentBackground!: SafeUrl;
   public zipCode: string = '28226' // TODO: make configurable

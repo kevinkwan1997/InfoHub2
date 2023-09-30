@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { BaseWidget } from '../base-widget';
 import { WeatherService } from 'src/app/services/data/weather/weather.service';
-import { Weather } from 'src/app/interface/data/weather';
+import { BaseWeatherData } from 'src/app/interface/data/weather';
 import { TextService } from 'src/app/services/text/text.service';
 import { WeatherIndication } from 'src/app/enum/weather';
 import { AssetService } from 'src/app/services/data/asset/asset.service';
@@ -19,7 +19,7 @@ export class WeatherComponent implements OnInit, BaseWidget {
       private weatherService: WeatherService
     ) {}
     
-    public currentWeather = signal<Weather | null>(null);
+    public currentWeather = signal<BaseWeatherData | null>(null);
     public hourlyWeather!: any; // TODO: Update
     public currentIcon: any;
     public currentBackground!: string;
