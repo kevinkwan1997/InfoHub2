@@ -5,7 +5,6 @@ import { Article, BannerConfig, HeadlineResponse } from 'src/app/interface/data/
 import { HttpService } from '../../http.service';
 import { NewsQueryParams, NewsUrlInfo } from 'src/app/enum/news';
 import { TextService } from '../../text/text.service';
-import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
 
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { SafeUrl } from '@angular/platform-browser';
@@ -21,13 +20,15 @@ export class NewsService implements Initializable {
   ) { }
 
   public headline$!: BehaviorSubject<HeadlineResponse>;
-  public bannerArticles$!: BehaviorSubject<BannerConfig[]>;
+  public bannerConfigs$!: BehaviorSubject<BannerConfig[]>;
 
   public async init(): Promise<InitializableReturnValue> {
     return this.requestHeadlines()
       .then((headline: HeadlineResponse) => this.initHeadline(headline))
-      .then((articles: Article[]) => this.getBannerConfigs(articles))
-      .then(() => {
+      .then((articles: Article[]) => this.getRandomBannerArticles(articles))
+      .then((articles: Article[]) => this.getImageUrls(articles))
+      .then((bannerConfigs) => {
+        this.bannerConfigs$ = new BehaviorSubject(bannerConfigs);
         return Promise.resolve({
           serviceName: NewsService.name,
           status: true,
@@ -43,7 +44,7 @@ export class NewsService implements Initializable {
           + this.textService.replace(NewsQueryParams.COUNTRY, 'us')
           + NewsQueryParams.KEY;
 
-        const result = getFirstFrom(this.httpService.get<HeadlineResponse>(requestUrl));
+        const result = this.httpService.get<HeadlineResponse>(requestUrl);
         resolve(result);
       } catch(error) {
         reject(error);
@@ -51,39 +52,58 @@ export class NewsService implements Initializable {
     })
   }
 
-  public async getBannerConfigs(articles: Article[]): Promise<BannerConfig[]> {
+  public getImageUrls(articles: Article[]): Promise<BannerConfig[]> {
     return new Promise((resolve, reject) => {
-      const bannerArticles: Article[] = [];
-      const maxArticles = 4;
-      for (let i = 0; i < maxArticles - 1; i++) {
-        let random = Math.floor(Math.random() * articles.length);
-        bannerArticles.push(articles[random]);
-      }
-      const bannerConfig: Promise<SafeUrl>[] = [];
-      for(let article of bannerArticles) {
+      let urls: Promise<BannerConfig>[] = [];
+      articles.forEach((article) => {
         try {
-          const blobPromise = getFirstFrom(this.httpService.getBlob(article.urlToImage))
-            .then((blob) => {
-              console.log('blob: ', blob.url);
-              return this.httpService.getImageFromBlob(blob)
-            });
-          bannerConfig.push(blobPromise);
+          const urlPromise = this.getImage(article.urlToImage)
+            .then((imageUrl) => {
+              if (!imageUrl) {
+                return <BannerConfig>{
+                  article
+                };
+              }
+              return <BannerConfig>{
+                article,
+                imageUrl
+              }
+            })
+          urls.push(urlPromise);
         } catch(error) {
           this.logService.error(NewsService.name, 'Failed to fetch banner image', error);
         }
-      }
-
-      Promise.all(bannerConfig)
-        .then((safeUrls: SafeUrl[]) => {
-          console.log(safeUrls);
-        });
-      resolve([
-
-      ]);
+      })
+      Promise.all(urls).then((urls) => resolve(urls));
     })
   }
 
-  public async initHeadline(headline: HeadlineResponse): Promise<Article[]> {
+  public getImages(articles: Article[]): Promise<BannerConfig[]> {
+    return new Promise((resolve, reject) => {
+      const bannerConfigs: BannerConfig[] = articles.map((article: Article) => {
+        const img = this.getImage(article.urlToImage);
+        return {
+          article,
+          imageUrl: img
+        }
+      })
+      resolve(bannerConfigs)
+    })
+  }
+
+  public getRandomBannerArticles(articles: Article[]): Promise<Article[]> {
+    return new Promise((resolve, reject) => {
+      const output: Article[] = [];
+      const maxArticles = 6;
+      for (let i = 0; i < maxArticles; i++) {
+        let random = Math.floor(Math.random() * articles.length);
+        output.push(articles[random]);
+      }
+      resolve(output);
+    })
+  }
+
+  public initHeadline(headline: HeadlineResponse): Promise<Article[]> {
     return new Promise((resolve, reject) => {
       this.headline$ = new BehaviorSubject(headline);
       return resolve(headline.articles);
@@ -99,22 +119,23 @@ export class NewsService implements Initializable {
       );
   }
 
-  public getBannerArticles(): Observable<Article[]> {
-    return this.headline$.asObservable()
+  public getBannerConfigs(): Observable<BannerConfig[]> {
+    return this.bannerConfigs$.asObservable()
       .pipe(
-        map((headline: HeadlineResponse) => {
-          const output: number[] = [];
-          const articles = headline.articles;
-          const maxArticles = 4;
-          for (let i = 0; i < maxArticles - 1; i++) {
-            let random = Math.floor(Math.random() * articles.length);
-            if (random in output) {
-              random = Math.floor(Math.random() * articles.length);
-            }
-            output.push(random);
-          }
-          return [articles[output[0]], articles[output[1]], articles[output[2]], articles[output[3]]]
+        map((articles) => {
+          return articles.filter((article) => !!article.imageUrl)
         })
-      )
+      );
+  }
+
+  public getImage(urlToImage: string): Promise<SafeUrl | null> {
+    if (!urlToImage) {
+      return Promise.resolve(null);
+    }
+    return this.httpService.getImageUrl(urlToImage);
+  }
+
+  public getImageUrl(urlToImage: string) {
+    return this.httpService.getBlob(urlToImage);
   }
 }

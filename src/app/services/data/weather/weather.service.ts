@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { WeatherDataTypes, WeatherIndication, WeatherQueryParams, WeatherUrlInfo } from 'src/app/enum/weather';
 import { TextService } from '../../text/text.service';
 import { HttpService } from '../../http.service';
-import { getFirstFrom } from 'src/app/helpers/rxjs-helper';
+import { getValue } from 'src/app/helpers/rxjs-helper';
 
 import { BaseWeatherData, Hourly, Weather, WeatherIconResponse } from 'src/app/interface/data/weather';
 import { Initializable, InitializableReturnValue } from 'src/app/interface/data/initializable';
@@ -33,7 +33,7 @@ export class WeatherService implements Initializable {
     let weather;
     let status = false;
     try {
-      weather = await getFirstFrom(this.getCurrentWeatherDataByZip('28226'));
+      weather = await this.getCurrentWeatherDataByZip('28226');
       this.currentWeather$ = new BehaviorSubject(weather);
       if (weather?.coord) {
         this.latitude = weather.coord.lat;
@@ -54,8 +54,8 @@ export class WeatherService implements Initializable {
       }
   
       try {
-        const fullWeatherUrl = (await getFirstFrom(this.getFullWeatherData())).url;
-        const fullWeather = (await getFirstFrom(this.httpService.get<any>(fullWeatherUrl)));
+        const fullWeatherUrl = (await this.getFullWeatherData()).url;
+        const fullWeather = await this.httpService.get<any>(fullWeatherUrl);
         console.log(fullWeather);
         this.currentHourlyWeather$ = new BehaviorSubject(fullWeather.hourly);
         this.setCurrentSelectedDetailedView(fullWeather.hourly[0]);
@@ -134,7 +134,7 @@ export class WeatherService implements Initializable {
     })
   }
 
-  public getCurrentWeatherDataByZip(zipCode: string): Observable<BaseWeatherData> {
+  public async getCurrentWeatherDataByZip(zipCode: string): Promise<BaseWeatherData> {
     const requestUrl = WeatherUrlInfo.URL_BASE_OLD
       + WeatherDataTypes.CURRENT_WEATHER
       + this.textService.replace(WeatherQueryParams.ZIP_US, zipCode)
@@ -142,11 +142,11 @@ export class WeatherService implements Initializable {
       + WeatherQueryParams.APP_ID
       + WeatherUrlInfo.API_KEY
     
-    const httpRequest = this.httpService.get<BaseWeatherData>(requestUrl);
+    const httpRequest = await this.httpService.get<BaseWeatherData>(requestUrl);
     return httpRequest;
   }
 
-  public getFullWeatherData(): Observable<any> {
+  public async getFullWeatherData(): Promise<any> {
     const requestUrl = WeatherUrlInfo.URL_BASE
       + this.textService.replace(WeatherQueryParams.LAT, this.latitude.toString())
       + this.textService.replace(WeatherQueryParams.LON, this.longitude.toString())
@@ -154,7 +154,7 @@ export class WeatherService implements Initializable {
       + WeatherQueryParams.APP_ID
       + WeatherUrlInfo.API_KEY
 
-    const httpRequest = this.httpService.getBlob(requestUrl);
+    const httpRequest = await this.httpService.getBlob(requestUrl);
     return httpRequest;
   }
 
@@ -189,10 +189,8 @@ export class WeatherService implements Initializable {
 
   public async getWeatherIcon(iconId: string): Promise<any> {
     let requestUrl = WeatherUrlInfo.IMG_URL_BASE.toString() + iconId + '.png';
-    const httpRequest = this.httpService.getBlob(requestUrl);
-    const result = (await getFirstFrom<WeatherIconResponse>(httpRequest)).body;
+    const result = (await this.httpService.getBlob(requestUrl)).body;
     const image = this.httpService.getImageFromBlob(result)
-
     return image;
   }
 

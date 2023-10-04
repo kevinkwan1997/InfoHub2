@@ -42,7 +42,7 @@ export class AssetService implements Initializable {
 
   public async requestImage(path: string): Promise<Blob> {
     return new Promise((resolve, reject) => {
-      this.httpService.getBlob(path).toPromise()
+      this.httpService.getBlob(path)
         .then((image) => {
           resolve(image.body);
         })

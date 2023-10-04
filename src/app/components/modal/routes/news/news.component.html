@@ -1,7 +1,33 @@
 <div class="news">
-    <div class="news__banner">
-        <ng-container *ngFor="let article of (bannerArticles$ | async); let i = index">
-            
+    <div class="news__carousel">
+        <ng-container class="news__carousel--container" *ngIf="(bannerArticle$ | async) as bannerConfig">
+            <img class="news__carousel--image" [src]="bannerConfig.imageUrl">
+            <div class="news__carousel--text">
+                <button class="news__carousel--left" (click)="back()">
+                    <i class="material-icons">arrow_back</i>
+                </button>
+                <button class="news__carousel--right" (click)="forward()">
+                    <i class="material-icons">arrow_forward</i>
+                </button>
+                <h1 class="news__carousel--title">{{ bannerConfig.article.title }}</h1>
+                <h2 class="news__carousel--desc">{{ bannerConfig.article.description }}</h2>
+                <p class="news__carousel--content">{{ bannerConfig.article.content }}</p>
+            </div>
         </ng-container>
+    </div>
+    <div class="news__inner">
+        <div class="news__inner--categories"></div>
+        <div class="news__inner--main">
+            <div class="news__inner--options">
+                <button class="news__inner--filter"><i class="material-icons">filter</i></button>
+                <button class="news__inner--number"><i class="material-icons">loupe</i></button>
+            </div>
+            <ul class="news__inner--articles">
+                <li class="news__inner--article" *ngFor="let article of headlineArticles$ | async">
+                    <img alt="" class="news__inner--image">
+                    {{ article.title }}
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

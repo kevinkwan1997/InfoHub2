@@ -22,5 +22,5 @@ export interface Article {
 
 export interface BannerConfig {
     article: Article;
-    imageUrl: SafeUrl;
+    imageUrl?: SafeUrl;
 }

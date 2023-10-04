@@ -1,5 +1,11 @@
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
-export async function getFirstFrom<T>(observable: Observable<T>): Promise<T> {
-    return await firstValueFrom<T>(observable);
+export async function getValue<T>(observable: Observable<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+        observable
+            .pipe(take(1))
+            .subscribe((result) => {
+                resolve(result);
+            })
+    });
 }
