@@ -1,7 +1,10 @@
 <div class="news">
     <div class="news__carousel">
         <ng-container class="news__carousel--container" *ngIf="(bannerArticle$ | async) as bannerConfig">
-            <img class="news__carousel--image" [src]="bannerConfig.imageUrl">
+            <img class="news__carousel--image" *ngIf="bannerConfig.imageUrl" [src]="bannerConfig.imageUrl">
+            <div class="news__carousel--placeholder" *ngIf="!bannerConfig.imageUrl">
+                <h1 class="news__carousel--failed">Failed to load image...</h1>
+            </div>
             <div class="news__carousel--text">
                 <button class="news__carousel--left" (click)="back()">
                     <i class="material-icons">arrow_back</i>

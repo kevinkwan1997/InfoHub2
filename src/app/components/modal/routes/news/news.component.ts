@@ -3,7 +3,7 @@ import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
 import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { NewsService } from 'src/app/services/data/news/news.service';
-import { Article, BannerConfig } from 'src/app/interface/data/news';
+import { Article, ArticleConfig } from 'src/app/interface/data/news';
 
 @Component({
   selector: 'news',
@@ -18,32 +18,29 @@ export class NewsComponent implements ModalComponent, OnInit {
   }
   @Input() public title!: string;
   public headlineArticles$!: Observable<Article[]>;
-  public bannerArticle$!: Observable<BannerConfig>;
+  public bannerArticle$!: Observable<ArticleConfig>;
   public bannerIndex$: BehaviorSubject<number> = new BehaviorSubject(0);
   public numberToLoad$: BehaviorSubject<number> = new BehaviorSubject(9);
 
   public ngOnInit(): void {
-    this.headlineArticles$ = combineLatest([
-      this.newsService.getHeadlineArticles(),
-      this.numberToLoad$
-    ])
+    this.headlineArticles$ = combineLatest([this.newsService.getHeadlineArticles(), this.numberToLoad$])
       .pipe(
-        distinctUntilChanged(),
-        map(([articles, numberToLoad]) => {
-          const reduced = articles.sort(() => 0.5 - Math.random()).slice(0, numberToLoad);
-          return reduced;
-        })
-      );
-    this.bannerArticle$ = combineLatest([
-      this.newsService.getBannerConfigs(),
-      this.bannerIndex$
-    ])
-      .pipe(
-        map(([bannerConfig, bannerIndex]) => {
-          return bannerConfig[bannerIndex];
-        })
-      )
-  }
+          distinctUntilChanged(),
+          map(([articles, numberToLoad]) => {
+            const reduced = articles.sort(() => 0.5 - Math.random()).slice(0, numberToLoad);
+            return reduced;
+          })
+        );
+      this.bannerArticle$ = combineLatest([
+        this.newsService.getBannerConfigs(),
+        this.bannerIndex$
+      ])
+        .pipe(
+          map(([articleConfig, bannerIndex]) => {
+            return articleConfig[bannerIndex];
+          })
+        )
+    }
 
   public forward(): void{
     const current = this.bannerIndex$.getValue();

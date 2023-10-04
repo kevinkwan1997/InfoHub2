@@ -1,6 +1,6 @@
 import { SafeUrl } from "@angular/platform-browser";
 
-export interface HeadlineResponse {
+export interface NewsResponse {
     status: string;
     totalResults: number;
     articles: Article[]
@@ -20,7 +20,7 @@ export interface Article {
     content: string;
 }
 
-export interface BannerConfig {
+export interface ArticleConfig {
     article: Article;
-    imageUrl?: SafeUrl;
+    imageUrl?: SafeUrl
 }

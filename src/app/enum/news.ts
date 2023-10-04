@@ -7,4 +7,15 @@ export enum NewsQueryParams {
     HEADLINES = 'top-headlines?',
     COUNTRY = 'country={{country}}&',
     KEY = 'apiKey=' + NewsUrlInfo.API_KEY,
+    EVERYTHING = 'everything?',
+    QUERY = 'q={{query}}?'
+}
+
+export enum NewsBaseCategories {
+    SPORTS = 'sports',
+    TECH = 'technology',
+    ECONOMY = 'economy',
+    POLITICS = 'politics',
+    SCIENCE = 'science',
+    GEOLOGY = 'geology',
 }
