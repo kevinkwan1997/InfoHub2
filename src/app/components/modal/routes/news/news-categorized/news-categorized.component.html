@@ -1,0 +1,8 @@
+<div class="container">
+    <ul class="list" *ngFor="let articlesByCategory of articlesByCategory">
+        <h4 class="list__category">{{ articlesByCategory.category }}</h4>
+        <li class="list__item" *ngFor="let article of articlesByCategory.articles">
+            <p class="list__item--title">{{ article.title }}</p>
+        </li>
+    </ul>
+</div>

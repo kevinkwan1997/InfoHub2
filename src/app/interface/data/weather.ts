@@ -1,3 +1,4 @@
+import { SafeUrl } from "@angular/platform-browser";
 import { WeatherIndication } from "src/app/enum/weather";
 
 export interface BaseWeatherData {
@@ -119,6 +120,7 @@ export interface Hourly {
   wind_gust: number;
   weather: Weather2[];
   pop: number;
+  icon?: SafeUrl
 }
 
 export interface Weather2 {

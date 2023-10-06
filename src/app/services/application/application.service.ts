@@ -5,7 +5,6 @@ import { NewsService } from '../data/news/news.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AssetService } from '../data/asset/asset.service';
 import { LogService } from '../log.service';
-import { InitializableReturnValue } from 'src/app/interface/data/initializable';
 
 @Injectable({
   providedIn: 'root'
@@ -31,12 +30,8 @@ export class ApplicationService {
     ];
 
     for (const service of initPromises) {
-      try {
-        const result = await service.init();
-        this.logService.info(result.serviceName, ' Finished initializing');
-      } catch(error) {
-        this.logService.error(ApplicationService.name, 'Error, failed to initialize: ', error);
-      }
+      const result = await service.init();
+      this.logService.info(result.serviceName, ' Finished initializing');
     }
     this.isApplicationLoaded$.next(true);
   }

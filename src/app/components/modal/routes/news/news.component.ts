@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ModalComponent } from 'src/app/interface/components/modal.interface';
 
-import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map, tap } from 'rxjs';
 import { NewsService } from 'src/app/services/data/news/news.service';
-import { Article, ArticleConfig } from 'src/app/interface/data/news';
+import { Article, ArticleConfig, ArticlesByCategory } from 'src/app/interface/data/news';
+import { NewsBaseCategories } from 'src/app/enum/news';
 
 @Component({
   selector: 'news',
@@ -19,8 +20,13 @@ export class NewsComponent implements ModalComponent, OnInit {
   @Input() public title!: string;
   public headlineArticles$!: Observable<Article[]>;
   public bannerArticle$!: Observable<ArticleConfig>;
+  public articlesByCategory$!: Observable<ArticlesByCategory[]>;
+
   public bannerIndex$: BehaviorSubject<number> = new BehaviorSubject(0);
-  public numberToLoad$: BehaviorSubject<number> = new BehaviorSubject(9);
+  public numberToLoad$: BehaviorSubject<number> = new BehaviorSubject(9); 
+
+  NEWS_BASE_CATEGORIES = NewsBaseCategories
+  public newsBaseCategories = this.NEWS_BASE_CATEGORIES;
 
   public ngOnInit(): void {
     this.headlineArticles$ = combineLatest([this.newsService.getHeadlineArticles(), this.numberToLoad$])
@@ -31,15 +37,14 @@ export class NewsComponent implements ModalComponent, OnInit {
             return reduced;
           })
         );
-      this.bannerArticle$ = combineLatest([
-        this.newsService.getBannerConfigs(),
-        this.bannerIndex$
-      ])
-        .pipe(
+    this.bannerArticle$ = combineLatest([this.newsService.getBannerConfigs(), this.bannerIndex$])
+      .pipe(
           map(([articleConfig, bannerIndex]) => {
             return articleConfig[bannerIndex];
           })
-        )
+      )
+
+    this.articlesByCategory$ = this.newsService.previewCategorizedArticles().pipe(tap((val) => console.log(val)));
     }
 
   public forward(): void{
@@ -49,7 +54,6 @@ export class NewsComponent implements ModalComponent, OnInit {
     } else {
       this.bannerIndex$.next(current + 1);
     }
-
   }
 
   public back(): void{

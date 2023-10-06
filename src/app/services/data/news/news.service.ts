@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Initializable, InitializableReturnValue } from 'src/app/interface/data/initializable';
 import { LogService } from '../../log.service';
-import { Article, ArticleConfig, NewsResponse } from 'src/app/interface/data/news';
+import { Article, ArticlesByCategory, ArticleConfig, NewsResponse } from 'src/app/interface/data/news';
 import { HttpService } from '../../http.service';
 import { NewsBaseCategories, NewsQueryParams, NewsUrlInfo } from 'src/app/enum/news';
 import { TextService } from '../../text/text.service';
 
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { SafeUrl } from '@angular/platform-browser';
-import { getValue } from 'src/app/helpers/rxjs-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +22,37 @@ export class NewsService implements Initializable {
   public headline$!: BehaviorSubject<NewsResponse>;
   public bannerConfigs$!: BehaviorSubject<ArticleConfig[]>;
   public loadedArticles$!: BehaviorSubject<ArticleConfig[]>;
+  public categorizedArticles$: BehaviorSubject<ArticlesByCategory[]> = new BehaviorSubject<ArticlesByCategory[]>([]);
+
+  public observeCategorizedArticles(): Observable<ArticlesByCategory[]> {
+    return this.categorizedArticles$.asObservable();
+  }
+
+  public previewCategorizedArticles(): Observable<ArticlesByCategory[]> {
+    return this.categorizedArticles$.asObservable()
+      .pipe(
+        map((articles: ArticlesByCategory[]) => {
+          return articles.map((articlesByCategory: ArticlesByCategory) => {
+            return {
+              category: articlesByCategory.category,
+              articles: articlesByCategory.articles.slice(0, 10),
+            }
+          })
+        })
+      )
+  }
 
   public async init(): Promise<InitializableReturnValue> {
     return this.requestHeadlines()
       .then((headline: NewsResponse) => this.initHeadline(headline))
       .then((articles: Article[]) => this.getRandomBannerArticles(articles))
-      .then((articles: Article[]) => this.getImageUrls(articles))
+      .then((articles: ArticleConfig[]) => this.getImageUrls(articles))
       .then((bannerConfigs) => {
         this.bannerConfigs$ = new BehaviorSubject(bannerConfigs);
+      })
+      .then(() => this.getCategorizedArticles())
+      .then((articles: ArticlesByCategory[]) => {
+        this.categorizedArticles$.next(articles);
         return Promise.resolve({
           serviceName: NewsService.name,
           status: true,
@@ -39,57 +61,54 @@ export class NewsService implements Initializable {
   }
 
   public async requestHeadlines(): Promise<NewsResponse> {
-      try {
-        const requestUrl = NewsUrlInfo.BASE_URL
-          + NewsQueryParams.HEADLINES
-          + this.textService.replace(NewsQueryParams.COUNTRY, 'us')
-          + NewsQueryParams.KEY;
+    const requestUrl = NewsUrlInfo.BASE_URL
+      + NewsUrlInfo.HEADLINES
+      + this.textService.replace(NewsQueryParams.COUNTRY, 'us')
+      + NewsQueryParams.KEY;
 
-        const result = this.httpService.get<NewsResponse>(requestUrl);
-        return result;
-      } catch(error) {
-        this.logService.log(NewsService.name, 'Failed to fetch headlines', error);
-        throw error;
-      }
-  }
-
-  public getImageUrls(articles: Article[]): Promise<ArticleConfig[]> {
-    let urls: Promise<ArticleConfig>[] = [];
-    articles.forEach((article) => {
-      try {
-        const urlPromise = this.getImage(article.urlToImage)
-          .then((imageUrl) => {
-            if (!imageUrl) {
-              return <ArticleConfig>{
-                article
-              };
-            }
-            return <ArticleConfig>{
-              article,
-              imageUrl
-            }
-          })
-        urls.push(urlPromise);
-      } catch(error) {
-        this.logService.error(NewsService.name, 'Failed to fetch banner image', error);
-      }
-    })
-    return Promise.all(urls).then((urls) => urls);
-  }
-
-  public getRandomBannerArticles(articles: Article[]): Promise<Article[]> {
-      const output: Article[] = [];
-      const maxArticles = 6;
-      for (let i = 0; i < maxArticles; i++) {
-        let random = Math.floor(Math.random() * articles.length);
-        output.push(articles[random]);
-      }
-      return Promise.resolve(output);
+    return this.httpService.get<NewsResponse>(requestUrl);
   }
 
   public initHeadline(headline: NewsResponse): Promise<Article[]> {
-      this.headline$ = new BehaviorSubject(headline);
-      return Promise.resolve(headline.articles);
+    this.headline$ = new BehaviorSubject(headline);
+    return Promise.resolve(headline.articles);
+  }
+
+  public getRandomBannerArticles(articles: Article[]): Promise<ArticleConfig[]> {
+    const record: Record<string, Article> = {};
+    let maxArticles = 6;
+    for (let article of articles) {
+      let random = Math.floor(Math.random() * articles.length);
+      const articleId = article.source.id;
+      if (record[articleId]) {
+        maxArticles++;
+      } else {
+        record[article.source.id] = articles[random];
+      }
+    }
+    const output: ArticleConfig[] = Object.entries(record)
+      .map(([id, article]) => ({
+        id,
+        article,
+      }))
+    return Promise.resolve(output);
+  }
+
+  public async getImageUrls(articleConfigs: ArticleConfig[]): Promise<ArticleConfig[]> {
+    const output: ArticleConfig[] = [];
+    for (const articleConfig of articleConfigs) {
+      const imageUrl = articleConfig.article.urlToImage;
+      if (!imageUrl) {
+        continue;
+      }
+      const safeUrl: SafeUrl = await this.httpService.getBlob(imageUrl);
+      output.push({
+        id: articleConfig.article.source.id,
+        article: articleConfig.article,
+        imageUrl: safeUrl,
+      })
+    }
+    return output;
   }
 
   public getHeadlineArticles(): Observable<Article[]> {
@@ -121,26 +140,29 @@ export class NewsService implements Initializable {
     return this.httpService.getBlob(urlToImage);
   }
 
-  public async sortArticleCategories(): Promise<NewsResponse[]> {
-    const articles: NewsResponse[] = [];
+  public async getCategorizedArticles(): Promise<ArticlesByCategory[]> {
+    const articles: ArticlesByCategory[] = [];
     for (const category of Object.keys(NewsBaseCategories)) {
       let queryArticles;
       try {
-        queryArticles = await this.searchArticles(category);
+        queryArticles = (await this.searchArticles(category)).articles;
       } catch(error) {
         this.logService.error(NewsService.name, `Failed to query for articles with query ${category}`, error);
       }
       if (queryArticles) {
-        articles.push(queryArticles);
+        articles.push({
+          articles: queryArticles,
+          category: category.toLowerCase(),
+        });
       }
     }
-    console.log('sorted articles: ', articles);
-    return Promise.resolve(articles);
+    console.log(articles);
+    return articles;
   }
 
   public async searchArticles(query: string): Promise<NewsResponse> {
     const requestUrl = NewsUrlInfo.BASE_URL
-      + NewsQueryParams.EVERYTHING
+      + NewsUrlInfo.EVERYTHING
       + this.textService.replace(NewsQueryParams.QUERY, query)
       + NewsQueryParams.KEY;
     

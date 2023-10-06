@@ -12,6 +12,7 @@ import { ModalService } from 'src/app/services/application/modal.service';
 import { FullWeatherModule } from './routes/full-weather/full-weather.module';
 import { RouterModule } from '@angular/router';
 import { modalRoutes } from './routes/modal.routes';
+import { NewsCategorizedComponent } from './routes/news/news-categorized/news-categorized.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { modalRoutes } from './routes/modal.routes';
     NewsComponent,
     TaskListComponent,
     ModalDirective,
+    NewsCategorizedComponent,
   ],
   imports: [
     CommonModule,

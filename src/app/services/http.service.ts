@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-import { Observable, map, take, of, catchError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { getValue } from '../helpers/rxjs-helper';
+import { LogService } from './log.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,32 +12,29 @@ import { getValue } from '../helpers/rxjs-helper';
 export class HttpService {
   constructor(
     private http: HttpClient,
+    private logService: LogService,
     private sanitizer: DomSanitizer
     ) {}
 
   public async get<T>(url: string): Promise<T> { // TODO: CONFIGURE FOR OPTIONS
-      let result: T;
-      try {
-        const responseObservable = this.http.get<T>(url);
-        result = await getValue(responseObservable);
-      } catch(error) {
-        throw new Error(`Http request failed fetching data of type ${<T>{}}`);
-      }
-      return result;
+      return await getValue(this.http.get<T>(url));
   }
 
-  public async getBlob(url: string): Promise<any> {
+  public async getBlob(url: string): Promise<SafeUrl> {
     const responseObservable = this.http.get(url, { observe: 'response', responseType: 'blob' });
-    let response;
-    try {
-      response = await getValue(responseObservable);
-    } catch(error) {
-      throw new Error(`Http request failed fetching Blob`);
+    const observableValue = await getValue(responseObservable);
+    const response = this.getImageFromBlob(observableValue.body);
+    if (!response) {
+      this.logService.error(HttpService.name, 'Failed to get safeUrl from image');
+      throw response;
     }
     return response;
   }
 
-  public getImageFromBlob(image: Blob) {
+  public getImageFromBlob(image: Blob | null): SafeUrl | null {
+    if (!image) {
+      return null;
+    }
     const unsafeImageUrl = URL.createObjectURL(image);
     const imageUrl = this.sanitizer.bypassSecurityTrustUrl(unsafeImageUrl);
     return imageUrl;
@@ -47,26 +45,9 @@ export class HttpService {
     return this.sanitizer.bypassSecurityTrustHtml(unsafeImageUrl);
   }
 
-  public async blobToImageUrl(blob: Blob): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!blob) {
-        reject();
-      }
-      try {
-        const unsafeImageUrl = URL.createObjectURL(blob);
-        if (unsafeImageUrl) {
-          resolve(this.sanitizer.bypassSecurityTrustUrl(unsafeImageUrl))
-        }
-      } catch(error) {
-        reject();
-      }
-    })
-  }
-
   public async getImageUrl(url: string): Promise<SafeUrl> {
     return this.getBlob(url)
-      .then((response) => this.blobToImageUrl(response?.body))
-      .then((url) => url.changingThisBreaksApplicationSecurity)
+      .then((url) => url)
       .catch((error) => {
         throw new Error('Failed to fetch image url...');
       })

@@ -19,18 +19,19 @@
         </ng-container>
     </div>
     <div class="news__inner">
-        <div class="news__inner--categories"></div>
+        <ul class="news__inner--categories">
+            <li class="news__inner--categories-item">
+                
+            </li>
+        </ul>
         <div class="news__inner--main">
             <div class="news__inner--options">
                 <button class="news__inner--filter"><i class="material-icons">filter</i></button>
                 <button class="news__inner--number"><i class="material-icons">loupe</i></button>
             </div>
-            <ul class="news__inner--articles">
-                <li class="news__inner--article" *ngFor="let article of headlineArticles$ | async">
-                    <img alt="" class="news__inner--image">
-                    {{ article.title }}
-                </li>
-            </ul>
+            <div class="news__inner--categorized">
+                <news-categorized [articlesByCategory]="articlesByCategory$ | async"></news-categorized>
+            </div>
         </div>
     </div>
 </div>

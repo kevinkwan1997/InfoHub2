@@ -22,13 +22,12 @@ export class AssetService implements Initializable {
     this.loadedImageUrls = <Record<WeatherIndication, SafeUrl>>{};
     const baseAssetPath = '/assets/'
     for (let key of Object.keys(WeatherIndication)) {
-      let url;
+      let url: SafeUrl;
       try {
         url = await this.requestImage(baseAssetPath + key + '.jpg');
-        const image = this.httpService.getImageFromBlob(url);
-        const ngStyleUrl = this.getNgStyleUrl(image);
+        const ngStyleUrl = this.getNgStyleUrl(url);
         this.loadedNgStyleImages[<WeatherIndication>key] = ngStyleUrl
-        this.loadedImageUrls[<WeatherIndication>key] = image;
+        this.loadedImageUrls[<WeatherIndication>key] = url;
         this.logService.info(AssetService.name, 'Success! Loaded image: ', ngStyleUrl);
       } catch (error) {
         this.logService.error(AssetService.name, 'Failed to load asset. Response: ', error);
@@ -40,11 +39,11 @@ export class AssetService implements Initializable {
     });
   }
 
-  public async requestImage(path: string): Promise<Blob> {
+  public async requestImage(path: string): Promise<SafeUrl> {
     return new Promise((resolve, reject) => {
       this.httpService.getBlob(path)
         .then((image) => {
-          resolve(image.body);
+          resolve(image);
         })
         .catch((error) => {
           reject(error);

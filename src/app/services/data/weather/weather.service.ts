@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { WeatherDataTypes, WeatherIndication, WeatherQueryParams, WeatherUrlInfo } from 'src/app/enum/weather';
 import { TextService } from '../../text/text.service';
 import { HttpService } from '../../http.service';
-import { getValue } from 'src/app/helpers/rxjs-helper';
 
-import { BaseWeatherData, Hourly, Weather, WeatherIconResponse } from 'src/app/interface/data/weather';
+import { BaseWeatherData, Hourly, Weather } from 'src/app/interface/data/weather';
 import { Initializable, InitializableReturnValue } from 'src/app/interface/data/initializable';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { LogService } from '../../log.service';
+import { SafeUrl } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -54,9 +54,7 @@ export class WeatherService implements Initializable {
       }
   
       try {
-        const fullWeatherUrl = (await this.getFullWeatherData()).url;
-        const fullWeather = await this.httpService.get<any>(fullWeatherUrl);
-        console.log(fullWeather);
+        const fullWeather = await this.getFullWeatherData();
         this.currentHourlyWeather$ = new BehaviorSubject(fullWeather.hourly);
         this.setCurrentSelectedDetailedView(fullWeather.hourly[0]);
         await this.setPreloadedIcons(fullWeather.hourly, weather);
@@ -126,7 +124,7 @@ export class WeatherService implements Initializable {
 
   public async getIconsForHourlyWeather(weather: Hourly[]) {
     return weather.map(async (hour) => {
-      const icon: Blob = await this.getWeatherIcon(<WeatherIndication>hour.weather[0].main);
+      const icon: SafeUrl = await this.getWeatherIcon(<WeatherIndication>hour.weather[0].main);
       return {
         ...hour,
         icon,
@@ -146,7 +144,7 @@ export class WeatherService implements Initializable {
     return httpRequest;
   }
 
-  public async getFullWeatherData(): Promise<any> {
+  public async getFullWeatherData(): Promise<Weather> {
     const requestUrl = WeatherUrlInfo.URL_BASE
       + this.textService.replace(WeatherQueryParams.LAT, this.latitude.toString())
       + this.textService.replace(WeatherQueryParams.LON, this.longitude.toString())
@@ -154,7 +152,7 @@ export class WeatherService implements Initializable {
       + WeatherQueryParams.APP_ID
       + WeatherUrlInfo.API_KEY
 
-    const httpRequest = await this.httpService.getBlob(requestUrl);
+    const httpRequest = await this.httpService.get<Weather>(requestUrl);
     return httpRequest;
   }
 
@@ -187,11 +185,10 @@ export class WeatherService implements Initializable {
     return bgUrl;
   }
 
-  public async getWeatherIcon(iconId: string): Promise<any> {
+  public async getWeatherIcon(iconId: string): Promise<SafeUrl> {
     let requestUrl = WeatherUrlInfo.IMG_URL_BASE.toString() + iconId + '.png';
-    const result = (await this.httpService.getBlob(requestUrl)).body;
-    const image = this.httpService.getImageFromBlob(result)
-    return image;
+    const result = await this.httpService.getBlob(requestUrl);
+    return result;
   }
 
 

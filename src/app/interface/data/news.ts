@@ -21,6 +21,12 @@ export interface Article {
 }
 
 export interface ArticleConfig {
+    id: string;
     article: Article;
-    imageUrl?: SafeUrl
+    imageUrl?: SafeUrl;
+}
+
+export interface ArticlesByCategory {
+    articles: Article[],
+    category: string;
 }
