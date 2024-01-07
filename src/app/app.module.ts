@@ -17,6 +17,7 @@ import { ModalModule } from './components/modal/modal.module';
 import { ApplicationService } from './services/application/application.service';
 import { ModalService } from './services/application/modal.service';
 import { LogService } from './services/log.service';
+import { TraceNextService } from './debug/trace-next.service';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { LogService } from './services/log.service';
     ApplicationService,
     ModalService,
     LogService,
+    TraceNextService,
   ],
   bootstrap: [AppComponent]
 })

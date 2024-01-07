@@ -160,13 +160,13 @@ export const ngIfSlideInBottomAbs = trigger('ngIfSlideInBottomAbs', [
     [
       style({ transform: 'translate(-50%, 200%' }),
       animate('0.75s ease-in-out', 
-              style({ transform: 'translate(-50%0, 0%)' }))
+              style({ transform: 'translate(-50%, 0%)' }))
     ]
   ),
   transition(
     ':leave', 
     [
-      style({ transform: 'translate(-50%0, 0%)' }),
+      style({ transform: 'translate(-50%, 0%)' }),
       animate('0.75s ease-in-out', 
               style({ transform: 'translate(-50%, 200%)' }))
     ]

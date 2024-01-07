@@ -58,6 +58,9 @@ export class NewsService implements Initializable {
           status: true,
         });
       })
+      .catch((error) => {
+        throw new Error(error.message);
+      })
   }
 
   public async requestHeadlines(): Promise<NewsResponse> {

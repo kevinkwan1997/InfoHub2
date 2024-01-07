@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NavigationService } from './navigation.service';
-import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { ActiveModalParams } from 'src/app/interface/components/modal.interface';
 
 @Injectable({

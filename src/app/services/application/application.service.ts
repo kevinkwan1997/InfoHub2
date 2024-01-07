@@ -30,8 +30,12 @@ export class ApplicationService {
     ];
 
     for (const service of initPromises) {
-      const result = await service.init();
-      this.logService.info(result.serviceName, ' Finished initializing');
+      try {
+        const result = await service.init();
+        this.logService.info(result.serviceName, ' Finished initializing');
+      } catch(error) {
+        this.logService.error('application service', 'error during init', error);
+      }
     }
     this.isApplicationLoaded$.next(true);
   }
